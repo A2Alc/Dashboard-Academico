@@ -11,7 +11,7 @@ Bem-vindo ao **My Academic**! Este é um sistema **gratuito, open-source e total
 Este sistema roda inteiramente no seu navegador para garantir sua privacidade e velocidade. **Ele não possui um banco de dados na nuvem.**
 
 * 💾 **Salvamento Automático:** O site salva suas alterações no "Cache" do navegador. Se fechar e abrir a aba, seus dados estarão lá.
-* 🔒 **Backup de Segurança (Obrigatório):** Se você limpar o cache, formatar o PC ou quiser acessar de outro dispositivo, você precisará do arquivo de backup.
+* 🔒 **Backup de Segurança:** Se você limpar o cache, formatar o PC ou quiser acessar de outro dispositivo, você precisará do arquivo de backup.
     1.  Clique no botão **Backup** (barra lateral) regularmente.
     2.  Guarde o arquivo `.json` gerado.
     3.  Para recuperar, clique em **Restaurar** e selecione esse arquivo.
