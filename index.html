@@ -3,175 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Acadêmico - BICT Mar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>My Academic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #0d47a1;
-            --secondary: #6c5ce7;
-            --bg: #f5f7fa;
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --bg: #f3f4f6;
+            --sidebar-width: 260px;
+            --sidebar-bg: #1f2937;
+            --text-main: #111827;
+            --text-light: #6b7280;
             --card-bg: #ffffff;
-            --text: #2d3436;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #d63031;
+            --danger: #ef4444;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Sidebar */
+        /* SIDEBAR */
         .sidebar {
-            width: 250px;
-            background: white;
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: white;
             padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             position: fixed;
             height: 100%;
+            transition: var(--transition);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
         }
 
+        body.collapsed .sidebar { width: 70px; padding: 20px 10px; }
+        body.collapsed .logo span, body.collapsed .nav-btn span, body.collapsed .nav-label { display: none; }
+        body.collapsed .logo { justify-content: center; }
+        body.collapsed .nav-btn { justify-content: center; padding: 12px; }
+
         .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #818cf8;
+            margin-bottom: 40px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            white-space: nowrap;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 25px;
+            right: -15px;
+            background: var(--primary);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 101;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
         }
 
         .nav-btn {
-            display: block;
             width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background: none;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            background: transparent;
             border: none;
             text-align: left;
             cursor: pointer;
             border-radius: 8px;
-            font-weight: 600;
-            color: #636e72;
-            transition: 0.3s;
+            color: #d1d5db;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        .nav-btn:hover, .nav-btn.active {
-            background: #e3f2fd;
-            color: var(--primary);
-        }
+        .nav-btn:hover, .nav-btn.active { background: var(--primary); color: white; }
+        .nav-btn i { font-size: 1.1rem; width: 20px; text-align: center; }
 
-        .nav-btn i { width: 25px; }
-
-        /* Main Content */
+        /* MAIN CONTENT */
         .main-content {
             flex: 1;
-            margin-left: 250px;
-            padding: 30px;
+            margin-left: var(--sidebar-width);
+            padding: 40px;
+            transition: var(--transition);
+            max-width: 100%;
         }
 
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.5s; }
+        body.collapsed .main-content { margin-left: 70px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .section { display: none; animation: fadeIn 0.4s ease-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { border-bottom: 2px solid #dfe6e9; padding-bottom: 10px; margin-bottom: 20px; }
+        h2 { font-weight: 700; color: var(--text-main); margin-bottom: 25px; font-size: 1.8rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; }
 
-        /* Cards */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
+        /* CARDS & GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
-        .stat-val { font-size: 2rem; font-weight: 700; color: var(--primary); }
-        .stat-label { color: #636e72; font-size: 0.9rem; }
+        .stat-card { display: flex; flex-direction: column; justify-content: space-between; height: 100px; }
+        .stat-title { font-size: 0.9rem; color: var(--text-light); font-weight: 500; }
+        .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
+        .stat-sub { font-size: 0.8rem; color: var(--secondary); }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #dfe6e9; }
-        th { background: #f1f2f6; font-weight: 600; }
-        tr:hover { background: #f8f9fa; }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .status-concluido { background: #d1fae5; color: #065f46; }
-        .status-cursando { background: #dbeafe; color: #1e40af; }
-        .status-pendente { background: #fee2e2; color: #991b1b; }
-
-        /* Inputs & Buttons */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        
-        input, select {
-            padding: 8px;
-            border: 1px solid #dfe6e9;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
-
-        /* Config Bar */
-        .config-bar {
-            background: #2d3436;
-            color: white;
-            padding: 15px;
+        /* FORMS & TABLES */
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
             border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
         }
-
-        /* Routine specific styles from your file */
-        .weekend-list li { margin-bottom: 8px; }
         
+        table { width: 100%; border-collapse: separate; border-spacing: 0; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f3f4f6; }
+        th { background: #f9fafb; font-weight: 600; color: var(--text-light); font-size: 0.85rem; text-transform: uppercase; }
+        tr:last-child td { border-bottom: none; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn:hover { filter: brightness(90%); }
+
+        /* TABS (Routine) */
+        .tab-container { margin-bottom: 20px; }
+        .tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-size: 1rem; color: var(--text-light); border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); font-weight: 600; }
+        .routine-content { display: none; }
+        .routine-content.active { display: block; }
+        .editable-area { min-height: 150px; border: 1px dashed #d1d5db; padding: 15px; border-radius: 8px; background: #fafafa; }
+
+        /* CALENDAR / SEMANA PADRÃO */
+        .calendar-wrapper { overflow-x: auto; }
+        .calendar-table { min-width: 800px; }
+        .calendar-table th { text-align: center; background: var(--primary); color: white; }
+        .calendar-table td { padding: 0; height: 1px; vertical-align: top; border-right: 1px solid #eee; position: relative; }
+        
+        .cal-slot {
+            height: 100%; min-height: 40px; 
+            border-bottom: 1px solid #f0f0f0; 
+            font-size: 0.8rem; 
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            cursor: pointer; transition: 0.2s;
+            padding: 2px;
+        }
+        .cal-slot:hover { background: #f9fafb; }
+        
+        /* Cores do Calendário */
+        .slot-obrig { background: #2d3436; color: white; border-radius: 4px; margin: 2px; }
+        .slot-elet { background: #10b981; color: white; border-radius: 4px; margin: 2px; }
+        .slot-extra { background: #f59e0b; color: white; border-radius: 4px; margin: 2px; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 16px; width: 400px; max-width: 90%; }
+
     </style>
 </head>
 <body>
 
+    <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+
     <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-graduation-cap"></i> BICT Mar
-        </div>
-        <button class="nav-btn active" onclick="showSection('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</button>
-        <button class="nav-btn" onclick="showSection('ucs')"><i class="fas fa-book"></i> Matriz Curricular</button>
-        <button class="nav-btn" onclick="showSection('calculator')"><i class="fas fa-calculator"></i> Calc. Notas</button>
-        <button class="nav-btn" onclick="showSection('routine')"><i class="fas fa-clock"></i> Minha Rotina</button>
-        <button class="nav-btn" onclick="showSection('config')"><i class="fas fa-cog"></i> Configurações</button>
+        <div class="logo"><i class="fas fa-graduation-cap"></i> <span>My Academic</span></div>
         
-        <div style="margin-top: 50px; border-top: 1px solid #dfe6e9; padding-top: 20px;">
-            <p style="font-size: 0.8rem; color: #666;">Gerenciamento de Dados</p>
-            <button class="btn btn-success" style="width:100%; margin-bottom: 10px;" onclick="exportData()"><i class="fas fa-download"></i> Salvar (Backup)</button>
-            <label for="fileInput" class="btn btn-primary" style="width:100%; display:block; text-align:center; box-sizing: border-box;"><i class="fas fa-upload"></i> Carregar</label>
+        <div class="nav-label">Geral</div>
+        <button class="nav-btn active" onclick="showSection('dashboard')"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></button>
+        <button class="nav-btn" onclick="showSection('routine')"><i class="fas fa-clock"></i> <span>Minha Rotina</span></button>
+        
+        <div class="nav-label">Acadêmico</div>
+        <button class="nav-btn" onclick="showSection('ucs')"><i class="fas fa-book"></i> <span>Matriz Curricular</span></button>
+        <button class="nav-btn" onclick="showSection('extras')"><i class="fas fa-star"></i> <span>Extracurriculares</span></button>
+        <button class="nav-btn" onclick="showSection('week')"><i class="fas fa-calendar-alt"></i> <span>Semana Padrão</span></button>
+        <button class="nav-btn" onclick="showSection('calculator')"><i class="fas fa-calculator"></i> <span>Calc. Notas</span></button>
+        
+        <div class="nav-label">Sistema</div>
+        <button class="nav-btn" onclick="showSection('config')"><i class="fas fa-cog"></i> <span>Configurações</span></button>
+        
+        <div style="margin-top: auto; padding-top: 20px;">
+            <button class="btn btn-success" style="width:100%; margin-bottom: 10px; justify-content: center;" onclick="exportData()"><i class="fas fa-download"></i> <span style="margin:0">Backup</span></button>
+            <label for="fileInput" class="btn btn-primary" style="width:100%; cursor: pointer; justify-content: center; box-sizing: border-box;"><i class="fas fa-upload"></i> <span style="margin:0">Restaurar</span></label>
             <input type="file" id="fileInput" style="display:none" onchange="importData(this)">
         </div>
     </div>
@@ -180,90 +232,162 @@
         
         <div id="dashboard" class="section active">
             <h2>Visão Geral</h2>
-            <div class="dashboard-grid">
-                <div class="card">
-                    <div class="stat-label">Progresso Total (Horas)</div>
-                    <div class="stat-val" id="dash-progress">0%</div>
-                    <small id="dash-hours">0 / 3000h</small>
+            <div class="grid">
+                <div class="card stat-card">
+                    <span class="stat-title">Progresso Total</span>
+                    <span class="stat-value" id="dash-total-perc">0%</span>
+                    <span class="stat-sub" id="dash-total-hours">0 / 0h</span>
                 </div>
-                <div class="card">
-                    <div class="stat-label">UCs Concluídas</div>
-                    <div class="stat-val" id="dash-ucs-done">0</div>
+                <div class="card stat-card">
+                    <span class="stat-title">Obrigatórias</span>
+                    <span class="stat-value" id="dash-obg-perc" style="color:#2d3436">0%</span>
+                    <span class="stat-sub" id="dash-obg-hours">0 / 0h</span>
                 </div>
-                <div class="card">
-                    <div class="stat-label">Média Geral Estimada</div>
-                    <div class="stat-val" id="dash-gpa">-</div>
+                <div class="card stat-card">
+                    <span class="stat-title">Eletivas</span>
+                    <span class="stat-value" id="dash-elec-perc" style="color:#10b981">0%</span>
+                    <span class="stat-sub" id="dash-elec-hours">0 / 0h</span>
+                </div>
+                <div class="card stat-card">
+                    <span class="stat-title">Extracurriculares</span>
+                    <span class="stat-value" id="dash-extra-perc" style="color:#f59e0b">0%</span>
+                    <span class="stat-sub" id="dash-extra-hours">0 / 0h</span>
                 </div>
             </div>
-
+            
             <div class="card">
-                <h3>Progresso por Categoria</h3>
-                <div id="category-progress"></div>
+                <h3>Resumo de Conclusão</h3>
+                <p>Mantenha suas configurações atualizadas para ver o progresso real.</p>
+                <div style="background:#e5e7eb; height:12px; border-radius:6px; overflow:hidden;">
+                    <div id="dash-bar" style="height:100%; width:0%; background:linear-gradient(90deg, var(--primary), var(--secondary)); transition:1s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="routine" class="section">
+            <h2>Minha Rotina</h2>
+            <div class="card">
+                <div class="tab-container">
+                    <button class="tab-btn active" onclick="openRoutineTab('weekdays')">Segunda à Sexta</button>
+                    <button class="tab-btn" onclick="openRoutineTab('saturday')">Sábado</button>
+                    <button class="tab-btn" onclick="openRoutineTab('sunday')">Domingo</button>
+                </div>
+
+                <div id="tab-weekdays" class="routine-content active">
+                    <p style="color:var(--text-light); margin-bottom:10px;">Edite sua rotina de dias úteis abaixo:</p>
+                    <div class="editable-area" contenteditable="true" onblur="saveRoutine('weekdays', this)">
+                        <ul><li>07:00 - Acordar...</li></ul>
+                    </div>
+                </div>
+                <div id="tab-saturday" class="routine-content">
+                    <p style="color:var(--text-light); margin-bottom:10px;">Edite sua rotina de sábado abaixo:</p>
+                    <div class="editable-area" contenteditable="true" onblur="saveRoutine('saturday', this)">
+                        <ul><li>09:00 - Lazer...</li></ul>
+                    </div>
+                </div>
+                <div id="tab-sunday" class="routine-content">
+                    <p style="color:var(--text-light); margin-bottom:10px;">Edite sua rotina de domingo abaixo:</p>
+                    <div class="editable-area" contenteditable="true" onblur="saveRoutine('sunday', this)">
+                        <ul><li>Descanso...</li></ul>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div id="ucs" class="section">
-            <h2>Matriz Curricular & Horas</h2>
-            <div class="config-bar">
-                <span>Gerencie suas matérias e horas complementares.</span>
-                <button class="btn btn-success" onclick="openUCModal()">+ Nova Matéria/Atividade</button>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <input type="text" id="searchUC" placeholder="Buscar matéria..." onkeyup="renderUCTable()" style="width: 300px;">
-                <select id="filterStatus" onchange="renderUCTable()">
-                    <option value="all">Todos os Status</option>
-                    <option value="Concluido">Concluído</option>
-                    <option value="Em andamento">Em Andamento</option>
-                    <option value="Pendente">Pendente</option>
-                </select>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2>Matriz Curricular</h2>
+                <button class="btn btn-primary" onclick="openUCModal('General')">+ Nova Matéria</button>
             </div>
 
-            <table id="uc-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Categoria</th>
-                        <th>Horas</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
+            <div class="card">
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <input type="text" id="searchUC" placeholder="Buscar matéria..." onkeyup="renderUCTable()" style="margin:0;">
+                    <select id="filterStatus" onchange="renderUCTable()" style="margin:0; width:200px;">
+                        <option value="all">Todos</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em andamento">Em andamento</option>
+                        <option value="Concluido">Concluído</option>
+                    </select>
+                </div>
+                <table id="uc-table">
+                    <thead>
+                        <tr><th>Nome</th><th>Tipo</th><th>Horas</th><th>Status</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="extras" class="section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2>Extracurriculares</h2>
+                <button class="btn btn-primary" onclick="openUCModal('Extra')">+ Nova Atividade</button>
+            </div>
+            
+            <div class="grid">
+                 <div class="card">
+                    <h3>Resumo por Grupo</h3>
+                    <ul id="extra-summary-list" style="list-style:none; padding:0;"></ul>
+                 </div>
+            </div>
+
+            <div class="card">
+                <table id="extra-table">
+                    <thead>
+                        <tr><th>Atividade</th><th>Grupo</th><th>Horas</th><th>Status</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="week" class="section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h2>Semana Padrão</h2>
+                <button class="btn btn-primary" onclick="renderCalendar()">Atualizar Grade</button>
+            </div>
+            <p style="color:var(--text-light); margin-bottom:20px;">Configure os horários na aba "Configurações". Clique no horário para adicionar uma matéria.</p>
+            
+            <div class="card calendar-wrapper">
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">Horário</th>
+                            <th>Segunda</th>
+                            <th>Terça</th>
+                            <th>Quarta</th>
+                            <th>Quinta</th>
+                            <th>Sexta</th>
+                            <th>Sábado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body">
+                        </tbody>
+                </table>
+            </div>
+            <div style="margin-top:15px; display:flex; gap:20px;">
+                <div style="display:flex; align-items:center; gap:5px;"><div style="width:15px; height:15px; background:#2d3436; border-radius:3px;"></div> Obrigatória</div>
+                <div style="display:flex; align-items:center; gap:5px;"><div style="width:15px; height:15px; background:#10b981; border-radius:3px;"></div> Eletiva</div>
+                <div style="display:flex; align-items:center; gap:5px;"><div style="width:15px; height:15px; background:white; border:1px solid #ccc; border-radius:3px;"></div> Livre</div>
+            </div>
         </div>
 
         <div id="calculator" class="section">
-            <h2>Calculadora de Aprovação</h2>
+            <h2>Calculadora de Notas</h2>
             <div class="card" style="max-width: 600px;">
-                <label>Nome da Matéria:</label>
-                <input type="text" id="calc-subject" placeholder="Ex: Cálculo I" style="width: 100%; margin-bottom: 10px;">
+                <label>Matéria:</label>
+                <input type="text" id="calc-subject" placeholder="Ex: Cálculo I">
                 
                 <table id="calc-table">
-                    <thead>
-                        <tr>
-                            <th>Avaliação</th>
-                            <th>Peso (0-10 ou %)</th>
-                            <th>Sua Nota</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="calc-body">
-                        <tr>
-                            <td><input type="text" value="P1"></td>
-                            <td><input type="number" class="calc-weight" value="1"></td>
-                            <td><input type="number" class="calc-grade" value="0"></td>
-                            <td><button class="btn-danger" onclick="removeCalcRow(this)">X</button></td>
-                        </tr>
-                    </tbody>
+                    <thead><tr><th>Avaliação</th><th>Peso</th><th>Nota</th><th></th></tr></thead>
+                    <tbody id="calc-body"></tbody>
                 </table>
-                <button class="btn btn-primary" onclick="addCalcRow()" style="margin-top: 10px;">+ Adicionar Avaliação</button>
-                <hr>
+                <button class="btn btn-primary" onclick="addCalcRow()" style="margin-top:10px;">+ Avaliação</button>
+                <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <button class="btn btn-success" onclick="calculateGrade()">Calcular Média</button>
+                    <button class="btn btn-success" onclick="calculateGrade()">Calcular</button>
                     <div style="text-align: right;">
-                        <span style="font-size: 0.9rem;">Média Final:</span>
                         <div id="calc-result" style="font-size: 1.5rem; font-weight: bold;">-</div>
                         <div id="calc-status"></div>
                     </div>
@@ -271,293 +395,430 @@
             </div>
         </div>
 
-        <div id="routine" class="section">
-            <h2>Minha Rotina Semanal</h2>
-            <div class="dashboard-grid">
-                <div class="card">
-                    <h3>☀️ Sábado</h3>
-                    <ul class="weekend-list" contenteditable="true" onblur="saveRoutineHTML(this, 'sabado')">
-                        <li><b>09:00 - 10:30:</b> Atividade Física ao ar livre.</li>
-                        <li><b>11:00 - 12:00:</b> Pendências (Mercado, Banco).</li>
-                        <li><b>Tarde:</b> Leitura Livre.</li>
-                        <li><b>Noite:</b> Lazer Social.</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>🍃 Domingo</h3>
-                    <ul class="weekend-list" contenteditable="true" onblur="saveRoutineHTML(this, 'domingo')">
-                        <li><b>Manhã:</b> Dormir até mais tarde. Rest Day.</li>
-                        <li><b>Tarde:</b> Hobbies e Planejamento.</li>
-                        <li><b>16:00:</b> Leitura Relaxante.</li>
-                    </ul>
-                </div>
-            </div>
-            <p><i>* Clique nos textos acima para editar e clique fora para salvar automaticamente.</i></p>
-        </div>
-
         <div id="config" class="section">
-            <h2>Configurações do Curso</h2>
-            <div class="card">
-                <label>Total de Horas para Formar:</label><br>
-                <input type="number" id="cfg-total-hours" value="2520"><br><br>
-                
-                <label>Média para Aprovação:</label><br>
-                <input type="number" id="cfg-passing-grade" value="6.0"><br><br>
-
-                <button class="btn btn-primary" onclick="saveConfig()">Salvar Configurações</button>
+            <h2>Configurações</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>🎓 Cargas Horárias (Total para Formar)</h3>
+                    <label>Horas Obrigatórias:</label>
+                    <input type="number" id="cfg-obg" value="1000">
+                    <label>Horas Eletivas:</label>
+                    <input type="number" id="cfg-elec" value="1000">
+                    <label>Horas Extracurriculares:</label>
+                    <input type="number" id="cfg-extra" value="200">
+                    <label>Média para Aprovação:</label>
+                    <input type="number" id="cfg-grade" value="6.0">
+                </div>
+                <div class="card">
+                    <h3>📅 Configuração do Calendário</h3>
+                    <label>Início do dia (Hora ex: 7):</label>
+                    <input type="number" id="cfg-cal-start" value="8">
+                    <label>Fim do dia (Hora ex: 23):</label>
+                    <input type="number" id="cfg-cal-end" value="22">
+                    <label>Intervalo (Minutos, ex: 60):</label>
+                    <input type="number" id="cfg-cal-step" value="60">
+                </div>
             </div>
+            <button class="btn btn-primary" onclick="saveConfig()">Salvar Todas Configurações</button>
         </div>
+
     </div>
 
-    <div id="ucModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
-        <div class="card" style="width: 400px;">
-            <h3>Gerenciar Matéria/Atividade</h3>
+    <div id="ucModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Adicionar</h3>
             <input type="hidden" id="modal-id">
-            <label>Nome:</label><input type="text" id="modal-name" style="width:95%; margin-bottom:10px;">
+            <input type="hidden" id="modal-type-context"> <label>Nome:</label>
+            <input type="text" id="modal-name">
+            
             <label>Categoria:</label>
-            <select id="modal-category" style="width:100%; margin-bottom:10px;">
+            <select id="modal-category">
                 <option value="Obrigatória">Obrigatória</option>
                 <option value="Eletiva">Eletiva</option>
-                <option value="Extracurricular">Extracurricular</option>
-            </select>
-            <label>Carga Horária:</label><input type="number" id="modal-hours" style="width:95%; margin-bottom:10px;">
+                </select>
+            
+            <div id="extra-group-container" style="display:none;">
+                <label>Grupo (Extracurricular):</label>
+                <select id="modal-group">
+                    <option value="Grupo I">Grupo I</option>
+                    <option value="Grupo II">Grupo II</option>
+                    <option value="Grupo III">Grupo III</option>
+                    <option value="Grupo IV">Grupo IV</option>
+                </select>
+            </div>
+
+            <label>Carga Horária:</label>
+            <input type="number" id="modal-hours">
+            
             <label>Status:</label>
-            <select id="modal-status" style="width:100%; margin-bottom:20px;">
+            <select id="modal-status">
                 <option value="Pendente">Pendente</option>
                 <option value="Em andamento">Em andamento</option>
                 <option value="Concluido">Concluído</option>
             </select>
-            <div style="text-align: right;">
-                <button class="btn btn-danger" onclick="closeUCModal()">Cancelar</button>
+            
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-danger" onclick="document.getElementById('ucModal').style.display='none'">Cancelar</button>
                 <button class="btn btn-success" onclick="saveUC()">Salvar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- ESTADO INICIAL DOS DADOS ---
-        // Aqui simulamos o carregamento inicial com base nos seus arquivos
+        // --- DATA STRUCTURE ---
         let appData = {
             config: {
-                totalHoursRequired: 2520,
-                passingGrade: 6.0
+                hoursObg: 1500,
+                hoursElec: 800,
+                hoursExtra: 220,
+                passingGrade: 6.0,
+                calStart: 7,
+                calEnd: 23,
+                calStep: 60
             },
-            ucs: [
-                // Dados extraídos dos seus CSVs (Amostra)
-                { id: 1, name: "Bases da Matemática e Estatística", category: "Obrigatória", hours: 80, status: "Concluido" },
-                { id: 2, name: "Evolução da Biodiversidade Marinha", category: "Obrigatória", hours: 80, status: "Concluido" },
-                { id: 3, name: "Princípios de Ciência e Tecnologia do mar", category: "Obrigatória", hours: 160, status: "Concluido" },
-                { id: 4, name: "Ecologia Marinha", category: "Obrigatória", hours: 80, status: "Em andamento" },
-                { id: 5, name: "Excel Básico - Fundação Bradesco", category: "Extracurricular", hours: 10, status: "Concluido" },
-                { id: 6, name: "Logística e Sistemas Inteligentes", category: "Eletiva", hours: 40, status: "Em andamento" }
-            ],
+            ucs: [], // {id, name, type: 'Obrigatória'|'Eletiva', hours, status}
+            extras: [], // {id, name, group, hours, status}
             routine: {
-                sabado: `<li><b>09:00 - 10:30:</b> Atividade Física ao ar livre.</li><li><b>11:00 - 12:00:</b> Pendências.</li>`,
-                domingo: `<li><b>Manhã:</b> Dormir até mais tarde.</li><li><b>Tarde:</b> Hobbies e Planejamento.</li>`
-            }
+                weekdays: '<ul><li>07:00 - Acordar</li><li>08:00 - Aulas</li><li>18:00 - Estudos</li></ul>',
+                saturday: '<ul><li>09:00 - Lazer</li></ul>',
+                sunday: '<ul><li>Descanso</li></ul>'
+            },
+            calendar: {} // key "day-hour-min": {name, type}
         };
 
-        // --- SISTEMA DE NAVEGAÇÃO ---
+        // --- INIT ---
+        window.onload = function() {
+            // Tenta carregar do LocalStorage primeiro (auto-save simples)
+            const saved = localStorage.getItem('myAcademicData');
+            if(saved) {
+                appData = JSON.parse(saved);
+                populateConfigInputs();
+            }
+            refreshAll();
+        };
+
+        function refreshAll() {
+            renderDashboard();
+            renderUCTable();
+            renderExtraTable();
+            renderRoutine();
+            renderCalendar();
+            localStorage.setItem('myAcademicData', JSON.stringify(appData));
+        }
+
+        function toggleSidebar() {
+            document.body.classList.toggle('collapsed');
+        }
+
         function showSection(id) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             
-            // Highlight botão (gambiarra simples)
-            event.currentTarget.classList.add('active'); // O botão clicado
+            // Acha o botão correspondente
+            const btns = document.getElementsByClassName('nav-btn');
+            for(let btn of btns) {
+                if(btn.onclick.toString().includes(id)) btn.classList.add('active');
+            }
             
-            if(id === 'dashboard') renderDashboard();
-            if(id === 'ucs') renderUCTable();
+            if(id === 'week') renderCalendar(); // Força render ao abrir
         }
 
-        // --- RENDERIZAÇÃO ---
+        // --- DASHBOARD ---
         function renderDashboard() {
-            const totalHours = appData.ucs
-                .filter(uc => uc.status === "Concluido")
-                .reduce((acc, curr) => acc + parseInt(curr.hours), 0);
-            
-            const percent = ((totalHours / appData.config.totalHoursRequired) * 100).toFixed(1);
-            
-            document.getElementById('dash-progress').innerText = percent + "%";
-            document.getElementById('dash-hours').innerText = `${totalHours} / ${appData.config.totalHoursRequired}h`;
-            document.getElementById('dash-ucs-done').innerText = appData.ucs.filter(u => u.status === "Concluido").length;
+            // Helpers
+            const sumHours = (list, type) => list.filter(i => i.status === 'Concluido' && (type ? i.type === type : true)).reduce((acc, c) => acc + parseInt(c.hours), 0);
+            const sumExtras = () => appData.extras.filter(i => i.status === 'Concluido').reduce((acc, c) => acc + parseInt(c.hours), 0);
 
-            // Progresso por categoria
-            const cats = {};
-            appData.ucs.forEach(uc => {
-                if(!cats[uc.category]) cats[uc.category] = {total: 0, done: 0};
-                cats[uc.category].total += parseInt(uc.hours);
-                if(uc.status === "Concluido") cats[uc.category].done += parseInt(uc.hours);
-            });
+            const obgDone = sumHours(appData.ucs, 'Obrigatória');
+            const elecDone = sumHours(appData.ucs, 'Eletiva');
+            const extraDone = sumExtras();
 
-            let html = '';
-            for(let c in cats) {
-                html += `<div style="margin-bottom:10px;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <span>${c}</span>
-                        <span>${cats[c].done}/${cats[c].total}h</span>
-                    </div>
-                    <div style="background:#dfe6e9; height:8px; border-radius:4px; margin-top:2px;">
-                        <div style="background:var(--secondary); height:100%; width:${(cats[c].done/cats[c].total)*100 || 0}%; border-radius:4px;"></div>
-                    </div>
-                </div>`;
+            const obgTotal = appData.config.hoursObg;
+            const elecTotal = appData.config.hoursElec;
+            const extraTotal = appData.config.hoursExtra;
+            const grandTotal = obgTotal + elecTotal + extraTotal;
+            const grandDone = obgDone + elecDone + extraDone;
+
+            // Update UI
+            document.getElementById('dash-obg-hours').innerText = `${obgDone} / ${obgTotal}h`;
+            document.getElementById('dash-obg-perc').innerText = Math.min(100, (obgDone/obgTotal)*100).toFixed(1) + '%';
+
+            document.getElementById('dash-elec-hours').innerText = `${elecDone} / ${elecTotal}h`;
+            document.getElementById('dash-elec-perc').innerText = Math.min(100, (elecDone/elecTotal)*100).toFixed(1) + '%';
+
+            document.getElementById('dash-extra-hours').innerText = `${extraDone} / ${extraTotal}h`;
+            document.getElementById('dash-extra-perc').innerText = Math.min(100, (extraDone/extraTotal)*100).toFixed(1) + '%';
+
+            document.getElementById('dash-total-hours').innerText = `${grandDone} / ${grandTotal}h`;
+            document.getElementById('dash-total-perc').innerText = Math.min(100, (grandDone/grandTotal)*100).toFixed(1) + '%';
+            
+            document.getElementById('dash-bar').style.width = Math.min(100, (grandDone/grandTotal)*100) + '%';
+        }
+
+        // --- ROUTINE ---
+        function openRoutineTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.routine-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
+        }
+
+        function renderRoutine() {
+            document.querySelector('#tab-weekdays .editable-area').innerHTML = appData.routine.weekdays;
+            document.querySelector('#tab-saturday .editable-area').innerHTML = appData.routine.saturday;
+            document.querySelector('#tab-sunday .editable-area').innerHTML = appData.routine.sunday;
+        }
+
+        function saveRoutine(key, el) {
+            appData.routine[key] = el.innerHTML;
+            refreshAll();
+        }
+
+        // --- UCs & EXTRAS ---
+        function openUCModal(context) {
+            document.getElementById('ucModal').style.display = 'flex';
+            document.getElementById('modal-id').value = '';
+            document.getElementById('modal-type-context').value = context;
+            document.getElementById('modal-name').value = '';
+            document.getElementById('modal-hours').value = '';
+            document.getElementById('modal-status').value = 'Pendente';
+            
+            const catSelect = document.getElementById('modal-category');
+            const groupDiv = document.getElementById('extra-group-container');
+
+            if(context === 'Extra') {
+                document.getElementById('modal-title').innerText = 'Nova Atividade Extracurricular';
+                catSelect.style.display = 'none'; // Não usa esse select pra extra
+                groupDiv.style.display = 'block';
+            } else {
+                document.getElementById('modal-title').innerText = 'Nova Matéria';
+                catSelect.style.display = 'block';
+                groupDiv.style.display = 'none';
             }
-            document.getElementById('category-progress').innerHTML = html;
+        }
+
+        function saveUC() {
+            const context = document.getElementById('modal-type-context').value;
+            const id = document.getElementById('modal-id').value;
+            
+            const newItem = {
+                id: id ? parseInt(id) : Date.now(),
+                name: document.getElementById('modal-name').value,
+                hours: parseInt(document.getElementById('modal-hours').value) || 0,
+                status: document.getElementById('modal-status').value
+            };
+
+            if(context === 'Extra') {
+                newItem.group = document.getElementById('modal-group').value;
+                if(id) {
+                    const idx = appData.extras.findIndex(x => x.id == id);
+                    appData.extras[idx] = newItem;
+                } else {
+                    appData.extras.push(newItem);
+                }
+            } else {
+                newItem.type = document.getElementById('modal-category').value;
+                if(id) {
+                    const idx = appData.ucs.findIndex(x => x.id == id);
+                    appData.ucs[idx] = newItem;
+                } else {
+                    appData.ucs.push(newItem);
+                }
+            }
+            
+            document.getElementById('ucModal').style.display = 'none';
+            refreshAll();
         }
 
         function renderUCTable() {
             const tbody = document.querySelector('#uc-table tbody');
             tbody.innerHTML = '';
-            
-            const filterText = document.getElementById('searchUC').value.toLowerCase();
-            const filterStatus = document.getElementById('filterStatus').value;
+            const filterTxt = document.getElementById('searchUC').value.toLowerCase();
+            const filterStat = document.getElementById('filterStatus').value;
 
             appData.ucs.forEach(uc => {
-                if(filterStatus !== 'all' && uc.status !== filterStatus) return;
-                if(!uc.name.toLowerCase().includes(filterText)) return;
-
+                if(filterStat !== 'all' && uc.status !== filterStat) return;
+                if(!uc.name.toLowerCase().includes(filterTxt)) return;
+                
                 const tr = document.createElement('tr');
-                let badgeClass = '';
-                if(uc.status === 'Concluido') badgeClass = 'status-concluido';
-                else if(uc.status === 'Em andamento') badgeClass = 'status-cursando';
-                else badgeClass = 'status-pendente';
-
                 tr.innerHTML = `
                     <td>${uc.name}</td>
-                    <td>${uc.category}</td>
+                    <td>${uc.type}</td>
                     <td>${uc.hours}h</td>
-                    <td><span class="status-badge ${badgeClass}">${uc.status}</span></td>
-                    <td>
-                        <button onclick="editUC(${uc.id})" style="border:none; background:none; color:blue; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteUC(${uc.id})" style="border:none; background:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button>
-                    </td>
+                    <td><span style="padding:4px 8px; border-radius:10px; font-size:0.8rem; background:${getStatusColor(uc.status)}">${uc.status}</span></td>
+                    <td><button onclick="deleteItem('ucs', ${uc.id})" class="btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- GESTÃO DE UCs ---
-        function openUCModal(id = null) {
-            document.getElementById('ucModal').style.display = 'flex';
-            if(id) {
-                const uc = appData.ucs.find(u => u.id === id);
-                document.getElementById('modal-id').value = uc.id;
-                document.getElementById('modal-name').value = uc.name;
-                document.getElementById('modal-category').value = uc.category;
-                document.getElementById('modal-hours').value = uc.hours;
-                document.getElementById('modal-status').value = uc.status;
-            } else {
-                document.getElementById('modal-id').value = '';
-                document.getElementById('modal-name').value = '';
-                document.getElementById('modal-hours').value = '';
+        function renderExtraTable() {
+            const tbody = document.querySelector('#extra-table tbody');
+            tbody.innerHTML = '';
+            const groups = {};
+
+            appData.extras.forEach(ex => {
+                // Group calc
+                if(!groups[ex.group]) groups[ex.group] = 0;
+                if(ex.status === 'Concluido') groups[ex.group] += ex.hours;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${ex.name}</td>
+                    <td>${ex.group}</td>
+                    <td>${ex.hours}h</td>
+                    <td><span style="padding:4px 8px; border-radius:10px; font-size:0.8rem; background:${getStatusColor(ex.status)}">${ex.status}</span></td>
+                    <td><button onclick="deleteItem('extras', ${ex.id})" class="btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Summary List
+            const list = document.getElementById('extra-summary-list');
+            list.innerHTML = '';
+            for(let g in groups) {
+                list.innerHTML += `<li><b>${g}:</b> ${groups[g]} horas concluídas</li>`;
             }
         }
 
-        function closeUCModal() {
-            document.getElementById('ucModal').style.display = 'none';
+        function getStatusColor(s) {
+            if(s === 'Concluido') return '#d1fae5; color:#065f46';
+            if(s === 'Em andamento') return '#dbeafe; color:#1e40af';
+            return '#fee2e2; color:#991b1b';
         }
 
-        function saveUC() {
-            const id = document.getElementById('modal-id').value;
-            const ucObj = {
-                id: id ? parseInt(id) : Date.now(),
-                name: document.getElementById('modal-name').value,
-                category: document.getElementById('modal-category').value,
-                hours: parseInt(document.getElementById('modal-hours').value) || 0,
-                status: document.getElementById('modal-status').value
-            };
-
-            if(id) {
-                const index = appData.ucs.findIndex(u => u.id == id);
-                appData.ucs[index] = ucObj;
-            } else {
-                appData.ucs.push(ucObj);
-            }
-            closeUCModal();
-            renderUCTable();
-            renderDashboard();
-        }
-
-        function editUC(id) { openUCModal(id); }
-        
-        function deleteUC(id) {
+        function deleteItem(arrName, id) {
             if(confirm('Tem certeza?')) {
-                appData.ucs = appData.ucs.filter(u => u.id !== id);
-                renderUCTable();
-                renderDashboard();
+                appData[arrName] = appData[arrName].filter(x => x.id !== id);
+                refreshAll();
             }
         }
 
-        // --- CALCULADORA DE NOTAS ---
-        function addCalcRow() {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><input type="text" value="Avaliação"></td>
-                <td><input type="number" class="calc-weight" value="1"></td>
-                <td><input type="number" class="calc-grade" value="0"></td>
-                <td><button class="btn-danger" onclick="removeCalcRow(this)">X</button></td>
-            `;
-            document.getElementById('calc-body').appendChild(tr);
+        // --- CALENDAR / SEMANA PADRÃO ---
+        function renderCalendar() {
+            const tbody = document.getElementById('calendar-body');
+            tbody.innerHTML = '';
+            
+            const start = parseInt(appData.config.calStart);
+            const end = parseInt(appData.config.calEnd);
+            const step = parseInt(appData.config.calStep); // in minutes
+
+            let currentTime = start * 60; // in minutes from midnight
+            const endTime = end * 60;
+
+            while(currentTime < endTime) {
+                const hour = Math.floor(currentTime / 60);
+                const min = currentTime % 60;
+                const timeStr = `${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
+                
+                const tr = document.createElement('tr');
+                
+                // Header Col
+                tr.innerHTML = `<td style="font-size:0.75rem; font-weight:bold; color:#666; background:#f9fafb; padding:5px; border-bottom:1px solid #eee;">${timeStr}</td>`;
+                
+                // Days Cols (1=Seg, 6=Sab)
+                for(let d=1; d<=6; d++) {
+                    const key = `${d}-${hour}-${min}`;
+                    const slotData = appData.calendar[key];
+                    let cellContent = '';
+                    let cellClass = '';
+
+                    if(slotData) {
+                        cellContent = slotData.name;
+                        if(slotData.type === 'Obrigatória') cellClass = 'slot-obrig';
+                        else if(slotData.type === 'Eletiva') cellClass = 'slot-elet';
+                        else cellClass = 'slot-extra';
+                    }
+
+                    tr.innerHTML += `
+                        <td>
+                            <div class="cal-slot ${cellClass}" onclick="editCalendarSlot('${key}')">
+                                ${cellContent}
+                            </div>
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+                currentTime += step;
+            }
         }
 
-        function removeCalcRow(btn) { btn.closest('tr').remove(); }
-
-        function calculateGrade() {
-            const weights = document.querySelectorAll('.calc-weight');
-            const grades = document.querySelectorAll('.calc-grade');
-            let totalW = 0;
-            let totalG = 0;
-
-            for(let i=0; i<weights.length; i++) {
-                const w = parseFloat(weights[i].value) || 0;
-                const g = parseFloat(grades[i].value) || 0;
-                totalW += w;
-                totalG += (g * w);
-            }
-
-            const final = totalW > 0 ? (totalG / totalW).toFixed(2) : 0;
-            const resultEl = document.getElementById('calc-result');
-            const statusEl = document.getElementById('calc-status');
+        function editCalendarSlot(key) {
+            const name = prompt("Nome da Matéria (Deixe vazio para limpar):");
+            if(name === null) return; // cancel
             
-            resultEl.innerText = final;
-            
-            if(final >= appData.config.passingGrade) {
-                resultEl.style.color = "var(--success)";
-                statusEl.innerText = "Aprovado! 🎉";
-                statusEl.style.color = "var(--success)";
+            if(name.trim() === '') {
+                delete appData.calendar[key];
             } else {
-                resultEl.style.color = "var(--danger)";
-                statusEl.innerText = "Reprovado 😢";
-                statusEl.style.color = "var(--danger)";
+                // Simples toggle de tipo ou prompt
+                const type = prompt("Tipo (O=Obrigatória, E=Eletiva, L=Livre)?", "O").toUpperCase();
+                let fullType = 'Livre';
+                if(type === 'O') fullType = 'Obrigatória';
+                if(type === 'E') fullType = 'Eletiva';
+
+                appData.calendar[key] = { name: name, type: fullType };
             }
+            renderCalendar();
+            refreshAll(); // save
         }
 
-        // --- ROTINA E CONFIG ---
-        function saveRoutineHTML(element, day) {
-            appData.routine[day] = element.innerHTML;
-        }
-
-        function loadRoutine() {
-            document.querySelectorAll('.weekend-list')[0].innerHTML = appData.routine.sabado || '';
-            document.querySelectorAll('.weekend-list')[1].innerHTML = appData.routine.domingo || '';
+        // --- CONFIG ---
+        function populateConfigInputs() {
+            document.getElementById('cfg-obg').value = appData.config.hoursObg;
+            document.getElementById('cfg-elec').value = appData.config.hoursElec;
+            document.getElementById('cfg-extra').value = appData.config.hoursExtra;
+            document.getElementById('cfg-grade').value = appData.config.passingGrade;
+            
+            document.getElementById('cfg-cal-start').value = appData.config.calStart;
+            document.getElementById('cfg-cal-end').value = appData.config.calEnd;
+            document.getElementById('cfg-cal-step').value = appData.config.calStep;
         }
 
         function saveConfig() {
-            appData.config.totalHoursRequired = parseInt(document.getElementById('cfg-total-hours').value);
-            appData.config.passingGrade = parseFloat(document.getElementById('cfg-passing-grade').value);
-            alert('Configurações salvas!');
-            renderDashboard();
+            appData.config.hoursObg = parseInt(document.getElementById('cfg-obg').value);
+            appData.config.hoursElec = parseInt(document.getElementById('cfg-elec').value);
+            appData.config.hoursExtra = parseInt(document.getElementById('cfg-extra').value);
+            appData.config.passingGrade = parseFloat(document.getElementById('cfg-grade').value);
+            
+            appData.config.calStart = parseInt(document.getElementById('cfg-cal-start').value);
+            appData.config.calEnd = parseInt(document.getElementById('cfg-cal-end').value);
+            appData.config.calStep = parseInt(document.getElementById('cfg-cal-step').value);
+
+            alert('Configurações Salvas!');
+            refreshAll();
         }
 
-        // --- IMPORTAR / EXPORTAR ---
+        // --- CALC NOTAS (Local Only) ---
+        function addCalcRow() {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><input type="text" value="Prova"></td><td><input type="number" class="w" value="1"></td><td><input type="number" class="g" value="0"></td><td><button onclick="this.closest('tr').remove()" class="btn-danger">X</button></td>`;
+            document.getElementById('calc-body').appendChild(tr);
+        }
+        function calculateGrade() {
+            let sumW=0, sumG=0;
+            document.querySelectorAll('#calc-body tr').forEach(row => {
+                const w = parseFloat(row.querySelector('.w').value) || 0;
+                const g = parseFloat(row.querySelector('.g').value) || 0;
+                sumW += w;
+                sumG += w*g;
+            });
+            const final = sumW ? (sumG/sumW).toFixed(2) : 0;
+            const el = document.getElementById('calc-result');
+            el.innerText = final;
+            const passed = final >= appData.config.passingGrade;
+            document.getElementById('calc-status').innerText = passed ? "Aprovado!" : "Reprovado";
+            document.getElementById('calc-status').style.color = passed ? "var(--secondary)" : "var(--danger)";
+        }
+
+        // --- IO ---
         function exportData() {
             const dataStr = JSON.stringify(appData);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            const exportFileDefaultName = 'meu-progresso-bict.json';
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
+            const link = document.createElement('a');
+            link.href = dataUri;
+            link.download = 'my-academic-backup.json';
+            link.click();
         }
 
         function importData(input) {
@@ -567,27 +828,16 @@
             reader.onload = function(e) {
                 try {
                     appData = JSON.parse(e.target.result);
-                    // Atualiza UI
-                    renderDashboard();
-                    renderUCTable();
-                    loadRoutine();
-                    document.getElementById('cfg-total-hours').value = appData.config.totalHoursRequired;
-                    document.getElementById('cfg-passing-grade').value = appData.config.passingGrade;
-                    alert('Dados carregados com sucesso!');
-                } catch(err) {
-                    alert('Erro ao ler arquivo. Verifique se é um JSON válido.');
-                }
+                    populateConfigInputs();
+                    refreshAll();
+                    alert('Backup restaurado!');
+                } catch(err) { alert('Erro ao ler arquivo.'); }
             };
             reader.readAsText(file);
         }
-
-        // Inicialização
-        window.onload = function() {
-            renderDashboard();
-            renderUCTable();
-            loadRoutine();
-        }
-
+        
+        // Initial setup for Calculator
+        addCalcRow();
     </script>
 </body>
 </html>
