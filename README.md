@@ -1,88 +1,87 @@
-🎓 My Academic - Seu Organizador Universitário
-Bem-vindo ao My Academic! Este é um sistema completo, gratuito e configurável para ajudar estudantes universitários a gerenciarem sua vida acadêmica.
+# 🎓 My Academic - Seu Organizador Universitário
 
-Com ele, você pode controlar suas horas complementares, calcular notas, monitorar presenças, montar sua grade horária e organizar sua rotina pessoal.
+> **O seu dashboard completo para gestão de notas, presença, horários e horas complementares.**
 
-⚠️ IMPORTANTE: COMO SALVAR SEUS DADOS
-Este site não salva seus dados na nuvem automaticamente. Tudo fica salvo no seu navegador (cache).
+Bem-vindo ao **My Academic**! Este é um sistema **gratuito, open-source e totalmente configurável** projetado para ajudar estudantes universitários a manterem o controle de sua vida acadêmica sem complicações.
 
-Para garantir que você não perca nada: Use o botão "Backup" (na barra lateral) sempre que fizer alterações importantes. Isso baixará um arquivo .json.
+---
 
-Para continuar de onde parou: Se limpar o cache ou trocar de computador, clique em "Restaurar" e selecione seu arquivo .json.
+## ⚠️ IMPORTANTE: COMO SALVAR SEUS DADOS
 
-🚀 PRIMEIROS PASSOS
-1. Ajuste as Configurações ⚙️
-Antes de começar, vá até a aba Configurações no menu lateral. É aqui que você define as regras do seu curso:
+Este sistema roda inteiramente no seu navegador para garantir sua privacidade e velocidade. **Ele não possui um banco de dados na nuvem.**
 
-Cargas Horárias: Defina quantas horas Obrigatórias, Eletivas e Extracurriculares são necessárias para se formar.
+* 💾 **Salvamento Automático:** O site salva suas alterações no "Cache" do navegador. Se fechar e abrir a aba, seus dados estarão lá.
+* 🔒 **Backup de Segurança (Obrigatório):** Se você limpar o cache, formatar o PC ou quiser acessar de outro dispositivo, você precisará do arquivo de backup.
+    1.  Clique no botão **Backup** (barra lateral) regularmente.
+    2.  Guarde o arquivo `.json` gerado.
+    3.  Para recuperar, clique em **Restaurar** e selecione esse arquivo.
 
-Média de Aprovação: Coloque a nota mínima (ex: 5.0, 6.0, 7.0).
+---
 
-Horários: Configure a hora que seu dia começa/termina na faculdade e na sua rotina pessoal.
+## 🚀 Funcionalidades Principais
 
-2. Monte sua Matriz Curricular 📚
-Vá na aba Matriz Curricular e adicione as matérias que você precisa cursar.
+* 📊 **Dashboard Geral:** Visão rápida do seu progresso no curso (Horas Obrigatórias, Eletivas e Extracurriculares).
+* 📚 **Matriz Curricular:** Gerencie quais matérias já cursou, está cursando ou faltam cursar.
+* ⭐ **Extracurriculares:** Controle de horas complementares separado por Grupos (I, II, III, IV).
+* 📅 **Semana Padrão:** Monte sua grade horária visualmente (com suporte a blocos de horas).
+* ⏰ **Minha Rotina:** Uma tabela separada para organizar sua vida pessoal (academia, estudos, trabalho).
+* ✅ **Controle de Faltas:** Monitoramento de presença com cálculo automático de porcentagem (Alerta de 75%).
+* 🧮 **Calculadora de Notas:** Saiba exatamente quanto precisa tirar na próxima prova para passar.
 
-Defina se é Obrigatória ou Eletiva.
+---
 
-Coloque a carga horária da matéria.
+## 📖 Guia de Uso Rápido
 
-Atualize o status: Pendente, Em andamento ou Concluído.
+### 1. Configuração Inicial ⚙️
+Antes de tudo, vá até a aba **Configurações**:
+* Defina as **Metas de Horas** do seu curso (ex: 1500h Obrigatórias).
+* Defina a **Média de Aprovação** (ex: 6.0 ou 5.0).
+* Configure os **Horários** da sua grade (início e fim das aulas).
 
-Dica: Ao marcar como "Concluído", as horas são somadas automaticamente no seu Dashboard.
+### 2. Montando a Grade (Semana Padrão) 📅
+1.  Vá na aba **Semana Padrão**.
+2.  Clique em um horário vazio.
+3.  Digite o nome da matéria.
+4.  O sistema perguntará: *"Quantos blocos de horário isso ocupa?"*.
+    * *Exemplo:* Se o intervalo é de 1h, mas sua aula dura 2h, digite **2**.
+5.  Defina se é **Obrigatória** ou **Eletiva** para colorir a tabela.
 
-3. Adicione Extracurriculares ⭐
-Na aba Extracurriculares, adicione seus cursos, palestras e iniciações científicas.
+### 3. Controle de Presença (Faltas) 🚫
+Não reprove por falta!
+1.  Clique em **+ Nova Matéria de Presença**.
+2.  Defina o **Início** e **Fim** do semestre letivo.
+3.  Selecione os **Dias da Semana** que você tem aula (Use `Ctrl` ou `Command` para selecionar múltiplos).
+4.  O sistema gera todas as datas letivas automaticamente.
+5.  Clique em **Gerenciar** para marcar:
+    * 🟢 **P:** Presente
+    * 🔴 **F:** Falta
+    * ⚪ **SA:** Sem Aula (Feriados/Cancelamentos - não afeta a média).
 
-Você pode selecionar o Grupo da atividade (I, II, III ou IV).
+### 4. Calculadora de Previsão 🧮
+Descubra sua situação na matéria:
+1.  Insira o **Peso Total** da disciplina (geralmente 10 ou 100).
+2.  Adicione suas notas atuais.
+3.  O sistema dirá: *"Você precisa tirar **X** nos pontos restantes para passar"*.
 
-O sistema separa a contagem de horas por grupo para facilitar sua organização.
+---
 
-📅 FUNCIONALIDADES AVANÇADAS
-🗓️ Semana Padrão (Grade Horária)
-Aqui você visualiza seus horários de aula.
+## 🛠️ Como Instalar / Rodar
 
-Clique em um espaço vazio na tabela.
+Este projeto é um arquivo único (`index.html`). Não requer instalação de servidores complexos.
 
-Digite o nome da matéria.
+### Opção A: Uso Local
+1.  Baixe o arquivo `index.html`.
+2.  Dê dois cliques para abrir no seu navegador (Chrome, Edge, Firefox, etc).
 
-O sistema perguntará quantos blocos ela dura.
+### Opção B: GitHub Pages (Recomendado)
+Para acessar do celular ou de qualquer lugar:
+1.  Faça um "Fork" deste repositório ou suba o arquivo `index.html` no seu GitHub.
+2.  Vá em **Settings** > **Pages**.
+3.  Em "Branch", selecione `main` (ou master) e salve.
+4.  Acesse pelo link gerado (ex: `seunome.github.io/my-academic`).
 
-Exemplo: Se cada bloco tem 1 hora e sua aula dura 2 horas, digite 2. O sistema vai mesclar as linhas automaticamente.
+---
 
-Defina se é Obrigatória ou Eletiva para colorir a grade.
-
-⏰ Minha Rotina
-Funciona igual à Semana Padrão, mas é para sua vida pessoal (Academia, Trabalho, Estudos).
-
-Nota: Os horários da Rotina são independentes da Faculdade. Você pode configurar a Rotina para começar às 06:00 e a Faculdade para começar às 18:00 na aba Configurações.
-
-✅ Controle de Faltas
-Gerencie sua presença para não reprovar por faltas (o sistema alerta se cair abaixo de 75%).
-
-Clique em Nova Matéria de Presença.
-
-Defina o Início e Fim do semestre.
-
-Selecione os Dias da Semana que você tem essa aula (segure Ctrl ou Command para selecionar mais de um dia).
-
-O sistema gera todas as datas automaticamente!
-
-Clique em Gerenciar no card da matéria para marcar:
-
-P: Presente
-
-F: Falta
-
-SA: Sem Aula (Feriados ou cancelamentos - não conta para a média).
-
-🧮 Calculadora de Notas
-Descubra exatamente quanto precisa tirar para passar.
-
-Adicione o nome da matéria.
-
-Defina o Peso Total (se a soma das provas vale 10 ou 100).
-
-Adicione suas notas parciais e seus pesos.
-
-O sistema dirá se você já passou, se está reprovado, ou quanto precisa tirar no restante dos pontos para ser aprovado.
+<div align="center">
+    Made with 💜 for students.
+</div>
