@@ -20,6 +20,7 @@
             --card-bg: #ffffff;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --neutral: #9ca3af;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -161,30 +162,29 @@
         th { background: #f9fafb; font-weight: 600; color: var(--text-light); font-size: 0.85rem; text-transform: uppercase; }
         tr:last-child td { border-bottom: none; }
         
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;}
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--secondary); color: white; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-neutral { background: var(--neutral); color: white; }
         .btn:hover { filter: brightness(90%); }
 
         /* CALENDAR & ROUTINE TABLES */
         .calendar-wrapper { overflow-x: auto; }
-        .calendar-table { min-width: 800px; border-collapse: separate; border-spacing: 2px; }
-        .calendar-table th { text-align: center; background: var(--primary); color: white; border-radius: 4px; }
+        .calendar-table { min-width: 800px; border-collapse: separate; border-spacing: 0; }
+        .calendar-table th { text-align: center; background: var(--primary); color: white; border-radius: 0; padding: 10px; border: 1px solid #e5e7eb;}
         
         .calendar-table td { 
             padding: 0; 
             vertical-align: top; 
-            border: none;
-            height: 1px;
+            border: 1px solid #f0f0f0;
+            height: 50px; /* Altura fixa para garantir alinhamento */
         }
         
         .cal-slot {
             height: 100%; 
-            min-height: 40px; 
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
+            min-height: 50px; 
+            background: transparent;
             font-size: 0.8rem; 
             display: flex; 
             align-items: center; 
@@ -195,8 +195,8 @@
             padding: 5px;
             box-sizing: border-box;
         }
-        .cal-slot:hover { background: #eff6ff; border-color: var(--primary); }
-        .cal-slot.filled { color: white; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .cal-slot:hover { background: #eff6ff; }
+        .cal-slot.filled { color: white; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 6px; margin: 2px;}
 
         /* Cores do Calendário */
         .slot-obrig { background: #2d3436; }
@@ -205,17 +205,22 @@
         .slot-routine { background: #6366f1; }
 
         /* ATTENDANCE BADGES */
-        .att-badge { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; cursor: pointer; border: 2px solid transparent; }
+        .att-badge { width: 35px; height: 35px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .att-p { background: #d1fae5; color: #065f46; }
-        .att-p.selected { border-color: #065f46; box-shadow: 0 0 0 2px #d1fae5; }
+        .att-p.selected { border-color: #065f46; box-shadow: 0 0 0 2px #d1fae5; transform: scale(1.1); }
+        
         .att-f { background: #fee2e2; color: #991b1b; }
-        .att-f.selected { border-color: #991b1b; box-shadow: 0 0 0 2px #fee2e2; }
-        .att-sa { background: #f3f4f6; color: #6b7280; }
-        .att-sa.selected { border-color: #6b7280; }
+        .att-f.selected { border-color: #991b1b; box-shadow: 0 0 0 2px #fee2e2; transform: scale(1.1); }
+        
+        .att-x { background: #e5e7eb; color: #374151; } /* Neutro */
+        .att-x.selected { border-color: #374151; box-shadow: 0 0 0 2px #e5e7eb; transform: scale(1.1); }
+
+        .att-sa { background: #f3f4f6; color: #9ca3af; border: 1px dashed #d1d5db;}
+        .att-sa.selected { border-color: #6b7280; transform: scale(1.1); }
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 16px; width: 500px; max-width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 30px; border-radius: 16px; width: 550px; max-width: 90%; max-height: 90vh; overflow-y: auto; }
 
     </style>
 </head>
@@ -294,7 +299,7 @@
                 <table class="calendar-table">
                     <thead>
                         <tr>
-                            <th style="width:60px;">Horário</th>
+                            <th style="width:80px;">Horário</th>
                             <th>Domingo</th>
                             <th>Segunda</th>
                             <th>Terça</th>
@@ -366,7 +371,7 @@
                 <table class="calendar-table">
                     <thead>
                         <tr>
-                            <th style="width:60px;">Horário</th>
+                            <th style="width:80px;">Horário</th>
                             <th>Segunda</th>
                             <th>Terça</th>
                             <th>Quarta</th>
@@ -402,10 +407,13 @@
                         <thead><tr><th>Avaliação</th><th>Peso</th><th>Nota</th><th></th></tr></thead>
                         <tbody id="calc-body"></tbody>
                     </table>
-                    <button class="btn btn-primary" onclick="addCalcRow()" style="margin-top:10px;">+ Avaliação</button>
+                    
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="btn btn-primary" onclick="addCalcRow()">+ Avaliação</button>
+                        <button class="btn btn-success" onclick="calculateGrade()">Calcular Agora</button>
+                    </div>
                 </div>
                 <div class="card" style="text-align:center;">
-                    <button class="btn btn-success" style="width:100%; margin-bottom:20px;" onclick="calculateGrade()">Calcular</button>
                     <div style="border-bottom:1px solid #eee; padding-bottom:15px; margin-bottom:15px;">
                         <span style="color:#666;">Média Parcial</span>
                         <div id="calc-result" style="font-size: 2.5rem; font-weight: bold; color:var(--primary);">0.0</div>
@@ -503,7 +511,7 @@
                 <option value="5">Sexta-feira</option>
                 <option value="6">Sábado</option>
             </select>
-            <small style="display:block; margin-bottom:15px; color:#666;">O sistema irá gerar automaticamente todas as datas entre o início e o fim para os dias selecionados.</small>
+            <small style="display:block; margin-bottom:15px; color:#666;">Geraremos automaticamente todas as datas. Datas futuras ficam como 'X'.</small>
 
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn btn-danger" onclick="document.getElementById('attModal').style.display='none'">Cancelar</button>
@@ -513,9 +521,10 @@
     </div>
 
     <div id="attManageModal" class="modal">
-        <div class="modal-content" style="width:600px;">
+        <div class="modal-content" style="width:700px;">
             <h3>Gerenciar Faltas: <span id="att-manage-title"></span></h3>
-            <div style="max-height: 400px; overflow-y:auto; margin-bottom:20px;">
+            <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Legenda: <b>P</b>=Presente, <b>F</b>=Falta, <b>X</b>=Ainda não ocorreu (conta como P), <b>SA</b>=Sem Aula (não conta).</p>
+            <div style="max-height: 500px; overflow-y:auto; margin-bottom:20px;">
                 <table id="att-manage-table">
                     <thead>
                         <tr>
@@ -552,7 +561,6 @@
             const saved = localStorage.getItem('myAcademicData');
             if(saved) {
                 appData = JSON.parse(saved);
-                // Migrar dados antigos se não tiver attendance array
                 if(!appData.attendance) appData.attendance = [];
                 populateConfigInputs();
             }
@@ -599,10 +607,8 @@
                 return;
             }
 
-            // Generate Dates
             let current = new Date(startStr);
             const end = new Date(endStr);
-            // Ajustar fuso horário (simples, setando hora para meio dia)
             current.setHours(12,0,0,0);
             end.setHours(12,0,0,0);
 
@@ -612,7 +618,7 @@
                 if(selectedDays.includes(current.getDay())) {
                     datesList.push({
                         date: current.toLocaleDateString('pt-BR'),
-                        status: 'Pendente' // Pendente, P, F, SA
+                        status: 'X' // Status padrão 'X' (Neutro/Futuro)
                     });
                 }
                 current.setDate(current.getDate() + 1);
@@ -637,17 +643,16 @@
                 let present = 0;
                 
                 att.dates.forEach(d => {
-                    if(d.status !== 'Sem Aula' && d.status !== 'Pendente') {
+                    // X conta como P para a projeção
+                    if(d.status !== 'Sem Aula') {
                         total++;
-                        if(d.status === 'P') present++;
+                        if(d.status === 'P' || d.status === 'X') present++;
                     }
                 });
 
-                // Calculo: Se não tiver nada marcado, 100%. Se tiver, calcula.
                 let perc = total === 0 ? 100 : ((present/total)*100).toFixed(1);
                 let color = perc >= 75 ? 'var(--secondary)' : 'var(--danger)';
-                let totalClasses = att.dates.length;
-
+                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.marginBottom = '20px';
@@ -656,14 +661,14 @@
                         <h3>${att.name}</h3>
                         <div style="text-align:right;">
                             <span style="font-size:1.5rem; font-weight:bold; color:${color}">${perc}%</span>
-                            <div style="font-size:0.8rem; color:#666;">${present}/${total} Aulas Consideradas</div>
+                            <div style="font-size:0.8rem; color:#666;">Projeção de Presença</div>
                         </div>
                     </div>
                     <div style="background:#e5e7eb; height:8px; border-radius:4px; margin:10px 0; overflow:hidden;">
                         <div style="height:100%; width:${perc}%; background:${color}; transition:0.5s;"></div>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <small>Total de dias gerados: ${totalClasses}</small>
+                        <small>Aulas contabilizadas: ${total}</small>
                         <div>
                             <button class="btn btn-primary" onclick="manageAttendance(${att.id})">Gerenciar</button>
                             <button class="btn btn-danger" onclick="deleteAttendance(${att.id})"><i class="fas fa-trash"></i></button>
@@ -674,9 +679,7 @@
             });
         }
 
-        let currentManageId = null;
         function manageAttendance(id) {
-            currentManageId = id;
             const att = appData.attendance.find(a => a.id === id);
             document.getElementById('att-manage-title').innerText = att.name;
             const tbody = document.getElementById('att-manage-body');
@@ -687,9 +690,10 @@
                 tr.innerHTML = `
                     <td>${d.date}</td>
                     <td style="display:flex; gap:5px;">
-                        <div class="att-badge att-p ${d.status === 'P' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'P')">P</div>
-                        <div class="att-badge att-f ${d.status === 'F' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'F')">F</div>
-                        <div class="att-badge att-sa ${d.status === 'Sem Aula' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'Sem Aula')">SA</div>
+                        <div title="Presente" class="att-badge att-p ${d.status === 'P' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'P')">P</div>
+                        <div title="Falta" class="att-badge att-f ${d.status === 'F' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'F')">F</div>
+                        <div title="Não Ocorreu (Conta como P)" class="att-badge att-x ${d.status === 'X' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'X')">X</div>
+                        <div title="Sem Aula / Cancelada" class="att-badge att-sa ${d.status === 'Sem Aula' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'Sem Aula')">SA</div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -700,8 +704,8 @@
         function setAttStatus(id, index, status) {
             const att = appData.attendance.find(a => a.id === id);
             att.dates[index].status = status;
-            manageAttendance(id); // re-render modal list
-            refreshAll(); // update background stats
+            manageAttendance(id); 
+            refreshAll(); 
         }
 
         function closeAttManage() { document.getElementById('attManageModal').style.display = 'none'; }
@@ -835,8 +839,7 @@
             tbody.innerHTML = '';
             const startMin = config.start * 60, endMin = config.end * 60, step = config.step;
             
-            // Occupied Matrix: [DayIndex][TimeInMinutes] = boolean
-            // Academic Days: 1-6, Routine Days: 0-6
+            // occupiedMatrix stores: key "day-timeMin" = true
             let occupiedMatrix = {};
 
             for(let time = startMin; time < endMin; time += step) {
@@ -851,11 +854,10 @@
                 const endDay = 6;
 
                 for(let d = startDay; d <= endDay; d++) {
-                    const key = `${d}-${hour}-${min}`;
-                    
-                    // Check occupancy
-                    if(occupiedMatrix[`${d}-${time}`]) continue; // Se ocupado, NÃO cria a célula (td)
+                    // Check if this slot is already occupied by a previous rowspan
+                    if(occupiedMatrix[`${d}-${time}`]) continue; 
 
+                    const key = `${d}-${hour}-${min}`;
                     const slotData = dataStore[key];
                     let rowSpan = 1;
                     let cellContent = '';
@@ -879,7 +881,7 @@
 
                     const td = document.createElement('td');
                     if(rowSpan > 1) td.rowSpan = rowSpan;
-                    td.innerHTML = `<div class="cal-slot ${cellClass}" onclick="editGridSlot('${type}', '${key}')" style="height:${(rowSpan*100)-5}%">${cellContent}</div>`;
+                    td.innerHTML = `<div class="cal-slot ${cellClass}" onclick="editGridSlot('${type}', '${key}')" style="height:${(rowSpan*100)-2}%">${cellContent}</div>`;
                     tr.appendChild(td);
                 }
                 tbody.appendChild(tr);
