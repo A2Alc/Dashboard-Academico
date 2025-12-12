@@ -55,7 +55,8 @@ Não reprove por falta!
 5.  Clique em **Gerenciar** para marcar:
     * 🟢 **P:** Presente
     * 🔴 **F:** Falta
-    * ⚪ **SA:** Sem Aula (Feriados/Cancelamentos - não afeta a média).
+    * ⚪ **SA:** Sem Aula (Feriados/Cancelamentos - não afeta a média)
+    * ⚪ **X:** Ainda não ocorreu
 
 ### 4. Calculadora de Previsão 🧮
 Descubra sua situação na matéria:
