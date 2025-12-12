@@ -70,16 +70,12 @@ Descubra sua situação na matéria:
 
 Este projeto é um arquivo único (`index.html`). Não requer instalação de servidores complexos.
 
-### Opção A: Uso Local
+### Uso Local
 1.  Baixe o arquivo `index.html`.
 2.  Dê dois cliques para abrir no seu navegador (Chrome, Edge, Firefox, etc).
 
-### Opção B: GitHub Pages (Recomendado)
-Para acessar do celular ou de qualquer lugar:
-1.  Faça um "Fork" deste repositório ou suba o arquivo `index.html` no seu GitHub.
-2.  Vá em **Settings** > **Pages**.
-3.  Em "Branch", selecione `main` (ou master) e salve.
-4.  Acesse pelo link gerado (ex: `seunome.github.io/my-academic`).
+### Uso Remoto
+1. Apenas salve o link e utilize o cache do navegador ou por arquivos externos.
 
 ---
 
