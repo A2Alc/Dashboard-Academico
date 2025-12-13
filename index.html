@@ -179,11 +179,10 @@
             padding: 0; 
             vertical-align: top; 
             border: 1px solid #f3f4f6;
-            height: 50px; /* Altura base da célula */
+            height: 50px; 
             position: relative;
         }
         
-        /* O bloco da aula dentro da célula */
         .cal-slot {
             width: 100%;
             height: 100%;
@@ -203,7 +202,6 @@
         .cal-slot:hover { filter: brightness(95%); }
         .cal-slot.empty:hover { background: #f0f9ff; }
         
-        /* Tipografia dentro do bloco */
         .slot-title { font-weight: 700; color: white; margin-bottom: 4px; line-height: 1.2; }
         .slot-type { font-size: 0.7rem; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -236,8 +234,6 @@
         .att-p.selected { border-color: #065f46; box-shadow: 0 0 0 2px #d1fae5; transform: scale(1.1); }
         .att-f { background: #fee2e2; color: #991b1b; }
         .att-f.selected { border-color: #991b1b; box-shadow: 0 0 0 2px #fee2e2; transform: scale(1.1); }
-        .att-x { background: #e5e7eb; color: #374151; }
-        .att-x.selected { border-color: #374151; box-shadow: 0 0 0 2px #e5e7eb; transform: scale(1.1); }
         .att-sa { background: #f3f4f6; color: #9ca3af; border: 1px dashed #d1d5db;}
         .att-sa.selected { border-color: #6b7280; transform: scale(1.1); }
 
@@ -540,6 +536,9 @@
             <label>Nome da Matéria:</label>
             <input type="text" id="att-name">
             
+            <label>Carga Horária (Horas Totais):</label>
+            <input type="number" id="att-total-hours" placeholder="Ex: 80">
+
             <label>Data de Início das Aulas:</label>
             <input type="date" id="att-start">
             
@@ -556,7 +555,7 @@
                 <option value="5">Sexta-feira</option>
                 <option value="6">Sábado</option>
             </select>
-            <small style="display:block; margin-bottom:15px; color:#666;">Geraremos automaticamente todas as datas. Datas futuras ficam como 'X'.</small>
+            <small style="display:block; margin-bottom:15px; color:#666;">Geraremos automaticamente todas as datas com padrão 'F'. Você deve marcar presença.</small>
 
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn btn-danger" onclick="document.getElementById('attModal').style.display='none'">Cancelar</button>
@@ -568,7 +567,7 @@
     <div id="attManageModal" class="modal">
         <div class="modal-content" style="width:700px;">
             <h3>Gerenciar Faltas: <span id="att-manage-title"></span></h3>
-            <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Legenda: <b>P</b>=Presente, <b>F</b>=Falta, <b>X</b>=Ainda não ocorreu (conta como P), <b>SA</b>=Sem Aula (não conta).</p>
+            <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Legenda: <b>P</b>=Presente, <b>F</b>=Falta, <b>SA</b>=Sem Aula (não conta).</p>
             <div style="max-height: 500px; overflow-y:auto; margin-bottom:20px;">
                 <table id="att-manage-table">
                     <thead>
@@ -596,7 +595,7 @@
             },
             ucs: [], 
             extras: [],
-            attendance: [], // {id, name, dates: [{date, status}]}
+            attendance: [], // {id, name, totalHours, dates: [{date, status}]}
             calendarAcademic: {}, 
             calendarRoutine: {}
         };
@@ -713,7 +712,6 @@
 
                         // Colors
                         let bgColor = stringToColor(slotData.name);
-                        // Make sure text is readable (simple check)
                         
                         const typeLabel = slotData.type === 'Obrigatória' ? 'Obrigatória' : (slotData.type === 'Eletiva' ? 'Eletiva' : '');
 
@@ -776,6 +774,7 @@
         
         function createAttendance() {
             const name = document.getElementById('att-name').value;
+            const totalHours = parseInt(document.getElementById('att-total-hours').value) || 0;
             const startStr = document.getElementById('att-start').value;
             const endStr = document.getElementById('att-end').value;
             const daysSelect = document.getElementById('att-days');
@@ -797,7 +796,7 @@
                 if(selectedDays.includes(current.getDay())) {
                     datesList.push({
                         date: current.toLocaleDateString('pt-BR'),
-                        status: 'X' 
+                        status: 'F' // Padrão F
                     });
                 }
                 current.setDate(current.getDate() + 1);
@@ -806,6 +805,7 @@
             appData.attendance.push({
                 id: Date.now(),
                 name: name,
+                totalHours: totalHours,
                 dates: datesList
             });
 
@@ -824,13 +824,19 @@
                 att.dates.forEach(d => {
                     if(d.status !== 'Sem Aula') {
                         total++;
-                        if(d.status === 'P' || d.status === 'X') present++;
+                        if(d.status === 'P') present++;
                     }
                 });
 
-                let perc = total === 0 ? 100 : ((present/total)*100).toFixed(1);
+                let perc = total === 0 ? 0 : ((present/total)*100).toFixed(1);
                 let color = perc >= 75 ? 'var(--secondary)' : 'var(--danger)';
                 
+                // Logic for "Max Misses"
+                // Assuming all classes have equal weight
+                // Max misses = 25% of total classes.
+                const maxMisses = Math.floor(total * 0.25);
+                const currentMisses = total - present;
+
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.marginBottom = '20px';
@@ -839,14 +845,14 @@
                         <h3>${att.name}</h3>
                         <div style="text-align:right;">
                             <span style="font-size:1.5rem; font-weight:bold; color:${color}">${perc}%</span>
-                            <div style="font-size:0.8rem; color:#666;">Projeção de Presença</div>
+                            <div style="font-size:0.8rem; color:#666;">Carga: ${att.totalHours || '?'}h</div>
                         </div>
                     </div>
                     <div style="background:#e5e7eb; height:8px; border-radius:4px; margin:10px 0; overflow:hidden;">
                         <div style="height:100%; width:${perc}%; background:${color}; transition:0.5s;"></div>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <small>Aulas contabilizadas: ${total}</small>
+                        <small>Faltou ${currentMisses} de ${maxMisses} permitidas.</small>
                         <div>
                             <button class="btn btn-primary" onclick="manageAttendance(${att.id})">Gerenciar</button>
                             <button class="btn btn-danger" onclick="deleteAttendance(${att.id})"><i class="fas fa-trash"></i></button>
@@ -870,7 +876,6 @@
                     <td style="display:flex; gap:5px;">
                         <div title="Presente" class="att-badge att-p ${d.status === 'P' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'P')">P</div>
                         <div title="Falta" class="att-badge att-f ${d.status === 'F' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'F')">F</div>
-                        <div title="Não Ocorreu (Conta como P)" class="att-badge att-x ${d.status === 'X' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'X')">X</div>
                         <div title="Sem Aula / Cancelada" class="att-badge att-sa ${d.status === 'Sem Aula' ? 'selected' : ''}" onclick="setAttStatus(${id}, ${index}, 'Sem Aula')">SA</div>
                     </td>
                 `;
