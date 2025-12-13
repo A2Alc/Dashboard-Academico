@@ -169,22 +169,45 @@
         .btn-neutral { background: var(--neutral); color: white; }
         .btn:hover { filter: brightness(90%); }
 
-        /* Estilo para Documentos de Texto (Semana e Rotina) */
-        .document-editor {
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 40px;
-            min-height: 500px;
-            outline: none;
-            font-size: 1rem;
-            line-height: 1.6;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .document-editor h3 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; }
-        .document-editor ul { padding-left: 20px; }
+        /* CALENDAR / GRADE */
+        .calendar-wrapper { overflow-x: auto; }
+        .calendar-table { min-width: 800px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+        .calendar-table th { text-align: center; background: var(--primary); color: white; padding: 10px; border: 1px solid #e5e7eb; width: 14%; }
+        .calendar-table th:first-child { width: 80px; }
 
-        /* Estilos de Tabela Avançados */
+        .calendar-table td { 
+            padding: 0; 
+            vertical-align: top; 
+            border: 1px solid #f3f4f6;
+            height: 50px; /* Altura base da célula */
+            position: relative;
+        }
+        
+        /* O bloco da aula dentro da célula */
+        .cal-slot {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .cal-slot:hover { filter: brightness(95%); }
+        .cal-slot.empty:hover { background: #f0f9ff; }
+        
+        /* Tipografia dentro do bloco */
+        .slot-title { font-weight: 700; color: white; margin-bottom: 4px; line-height: 1.2; }
+        .slot-type { font-size: 0.7rem; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Estilos de Tabela Avançados (Matriz) */
         .term-header {
             background: #e5e7eb;
             color: var(--text-main);
@@ -289,9 +312,28 @@
         </div>
 
         <div id="routine" class="section">
-            <h2>Minha Rotina (Documento)</h2>
-            <p style="color:var(--text-light);">Edite sua rotina pessoal livremente abaixo:</p>
-            <div id="routine-editor" class="document-editor" contenteditable="true" onblur="saveDocument('routine', this)"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h2>Minha Rotina (Grade)</h2>
+                <button class="btn btn-primary" onclick="renderGrid('routine')">Atualizar Visualização</button>
+            </div>
+            <p style="color:var(--text-light); margin-bottom:20px;">Clique nos espaços vazios para adicionar atividades. Defina a duração para ocupar mais linhas.</p>
+            <div class="card calendar-wrapper">
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Domingo</th>
+                            <th>Segunda</th>
+                            <th>Terça</th>
+                            <th>Quarta</th>
+                            <th>Quinta</th>
+                            <th>Sexta</th>
+                            <th>Sábado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routine-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="ucs" class="section">
@@ -344,10 +386,26 @@
 
         <div id="week" class="section">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h2>Semana Padrão (Documento)</h2>
+                <h2>Semana Padrão (Grade)</h2>
+                <button class="btn btn-primary" onclick="renderGrid('academic')">Atualizar Visualização</button>
             </div>
-            <p style="color:var(--text-light); margin-bottom:20px;">Monte sua grade livremente. Use as ferramentas do navegador ou copie e cole.</p>
-            <div id="week-editor" class="document-editor" contenteditable="true" onblur="saveDocument('academic', this)"></div>
+            <p style="color:var(--text-light); margin-bottom:20px;">Clique para adicionar matérias. Configure o início e fim do dia na aba Configurações.</p>
+            <div class="card calendar-wrapper">
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Segunda</th>
+                            <th>Terça</th>
+                            <th>Quarta</th>
+                            <th>Quinta</th>
+                            <th>Sexta</th>
+                            <th>Sábado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="academic-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="attendance" class="section">
@@ -401,6 +459,18 @@
                     <label>Horas Eletivas:</label><input type="number" id="cfg-elec" value="800">
                     <label>Extracurriculares:</label><input type="number" id="cfg-extra" value="220">
                     <label>Média Aprovação:</label><input type="number" id="cfg-grade" value="6.0">
+                </div>
+                <div class="card">
+                    <h3>📅 Semana Padrão</h3>
+                    <label>Início (Hora):</label><input type="number" id="cfg-cal-start" value="13">
+                    <label>Fim (Hora):</label><input type="number" id="cfg-cal-end" value="23">
+                    <label>Intervalo (Minutos):</label><input type="number" id="cfg-cal-step" value="60">
+                </div>
+                <div class="card" style="border-left: 5px solid var(--primary);">
+                    <h3>⏰ Minha Rotina</h3>
+                    <label>Início (Hora):</label><input type="number" id="cfg-rot-start" value="6">
+                    <label>Fim (Hora):</label><input type="number" id="cfg-rot-end" value="23">
+                    <label>Intervalo (Minutos):</label><input type="number" id="cfg-rot-step" value="60">
                 </div>
             </div>
             <button class="btn btn-primary" onclick="saveConfig()">Salvar Todas Configurações</button>
@@ -520,15 +590,15 @@
         // --- DATA STRUCTURE ---
         let appData = {
             config: {
-                hoursObg: 1500, hoursElec: 800, hoursExtra: 220, passingGrade: 6.0
+                hoursObg: 1500, hoursElec: 800, hoursExtra: 220, passingGrade: 6.0,
+                calStart: 13, calEnd: 23, calStep: 60,
+                rotStart: 6, rotEnd: 23, rotStep: 60
             },
             ucs: [], 
             extras: [],
             attendance: [], // {id, name, dates: [{date, status}]}
-            docs: {
-                academic: "<h3>Grade Semanal</h3><p>Edite aqui...</p>",
-                routine: "<h3>Minha Rotina</h3><p>Edite aqui...</p>"
-            }
+            calendarAcademic: {}, 
+            calendarRoutine: {}
         };
 
         // --- INIT ---
@@ -537,7 +607,9 @@
             if(saved) {
                 appData = JSON.parse(saved);
                 if(!appData.attendance) appData.attendance = [];
-                if(!appData.docs) appData.docs = { academic: "", routine: "" };
+                // Revertendo para calendarios (caso tenha salvo como docs)
+                if(!appData.calendarAcademic) appData.calendarAcademic = {};
+                if(!appData.calendarRoutine) appData.calendarRoutine = {};
                 populateConfigInputs();
             }
             refreshAll();
@@ -548,11 +620,8 @@
             renderUCTable();
             renderExtraTable();
             renderAttendanceList();
-            
-            // Load Documents
-            if(document.getElementById('week-editor')) document.getElementById('week-editor').innerHTML = appData.docs.academic;
-            if(document.getElementById('routine-editor')) document.getElementById('routine-editor').innerHTML = appData.docs.routine;
-
+            renderGrid('academic');
+            renderGrid('routine');
             localStorage.setItem('myAcademicData', JSON.stringify(appData));
         }
 
@@ -567,13 +636,139 @@
             for(let btn of btns) {
                 if(btn.onclick.toString().includes(id)) btn.classList.add('active');
             }
+            if(id === 'week') renderGrid('academic');
+            if(id === 'routine') renderGrid('routine');
         }
 
-        // --- DOCUMENTS (WEEK & ROUTINE) ---
-        function saveDocument(type, element) {
-            if(!appData.docs) appData.docs = {};
-            appData.docs[type] = element.innerHTML;
-            localStorage.setItem('myAcademicData', JSON.stringify(appData));
+        // --- GRID RENDERER (ROBUST VERSION) ---
+        // Generates a color based on string hash
+        function stringToColor(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+            return '#' + "00000".substring(0, 6 - c.length) + c;
+        }
+
+        function renderGrid(type) {
+            let config, dataStore, tbodyId;
+            if(type === 'academic') {
+                config = { start: appData.config.calStart, end: appData.config.calEnd, step: appData.config.calStep };
+                dataStore = appData.calendarAcademic || {};
+                tbodyId = 'academic-body';
+            } else {
+                config = { start: appData.config.rotStart, end: appData.config.rotEnd, step: appData.config.rotStep };
+                dataStore = appData.calendarRoutine || {};
+                tbodyId = 'routine-body';
+            }
+
+            const tbody = document.getElementById(tbodyId);
+            tbody.innerHTML = '';
+            
+            const startMin = config.start * 60;
+            const endMin = config.end * 60;
+            const step = config.step;
+            const totalSlots = Math.floor((endMin - startMin) / step);
+            
+            // Occupied Matrix: [DayIndex][SlotIndex] = true/false
+            // Academic Days: 1-6 (Mon-Sat), Routine: 0-6 (Sun-Sat)
+            let occupiedMatrix = {}; // key: "day-slotIndex"
+
+            let slotIndex = 0;
+            for(let time = startMin; time < endMin; time += step) {
+                const hour = Math.floor(time / 60);
+                const min = time % 60;
+                const timeStr = `${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="font-size:0.75rem; font-weight:bold; color:#666; background:#f9fafb; padding:5px; border-bottom:1px solid #eee;">${timeStr}</td>`;
+                
+                const startDay = type === 'academic' ? 1 : 0;
+                const endDay = 6;
+
+                for(let d = startDay; d <= endDay; d++) {
+                    const matrixKey = `${d}-${slotIndex}`;
+                    
+                    // If occupied by a previous rowspan, SKIP
+                    if(occupiedMatrix[matrixKey]) continue;
+
+                    const dataKey = `${d}-${hour}-${min}`;
+                    const slotData = dataStore[dataKey];
+                    let rowSpan = 1;
+                    let cellHtml = '';
+                    
+                    if(slotData) {
+                        // Clamp rowspan to prevent overflow
+                        let requestedBlocks = slotData.blocks || 1;
+                        if (slotIndex + requestedBlocks > totalSlots) {
+                            requestedBlocks = totalSlots - slotIndex;
+                        }
+                        rowSpan = requestedBlocks;
+                        
+                        // Mark future slots
+                        for(let r = 1; r < rowSpan; r++) {
+                            occupiedMatrix[`${d}-${slotIndex + r}`] = true;
+                        }
+
+                        // Colors
+                        let bgColor = stringToColor(slotData.name);
+                        // Make sure text is readable (simple check)
+                        
+                        const typeLabel = slotData.type === 'Obrigatória' ? 'Obrigatória' : (slotData.type === 'Eletiva' ? 'Eletiva' : '');
+
+                        cellHtml = `
+                        <div class="cal-slot filled" onclick="editGridSlot('${type}', '${dataKey}')" style="background:${bgColor}; box-shadow:inset 0 0 0 1000px rgba(0,0,0,0.1);">
+                            <div class="slot-title">${slotData.name}</div>
+                            <div class="slot-type">${typeLabel}</div>
+                            <div class="slot-type" style="margin-top:2px; font-size:0.6rem;">${rowSpan * (step/60)}h</div>
+                        </div>`;
+                    } else {
+                        cellHtml = `<div class="cal-slot empty" onclick="editGridSlot('${type}', '${dataKey}')"></div>`;
+                    }
+
+                    const td = document.createElement('td');
+                    if(rowSpan > 1) td.rowSpan = rowSpan;
+                    td.innerHTML = cellHtml;
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+                slotIndex++;
+            }
+        }
+
+        function editGridSlot(type, key) {
+            let dataStore = type === 'academic' ? appData.calendarAcademic : appData.calendarRoutine;
+            if(!dataStore) dataStore = {};
+            const current = dataStore[key] || {};
+            
+            const name = prompt("Nome da Atividade/Matéria (Deixe vazio para limpar):", current.name || "");
+            if(name === null) return; // Cancelar
+
+            if(name.trim() === '') {
+                delete dataStore[key];
+            } else {
+                // Configuração detalhada
+                let blocks = prompt("Duração em Horas (apenas números, ex: 2 ou 4):", current.blocks || 1);
+                blocks = parseInt(blocks);
+                if(isNaN(blocks) || blocks < 1) blocks = 1;
+
+                let activityType = 'Routine';
+                if(type === 'academic') {
+                    const t = prompt("Tipo (O=Obrigatória, E=Eletiva)?", current.type && current.type.charAt(0) || "O").toUpperCase();
+                    activityType = (t === 'E') ? 'Eletiva' : 'Obrigatória';
+                }
+
+                dataStore[key] = { 
+                    name: name, 
+                    type: activityType, 
+                    blocks: blocks 
+                };
+            }
+            
+            if(type === 'academic') appData.calendarAcademic = dataStore;
+            else appData.calendarRoutine = dataStore;
+            refreshAll();
         }
 
         // --- ATTENDANCE SYSTEM ---
@@ -602,7 +797,7 @@
                 if(selectedDays.includes(current.getDay())) {
                     datesList.push({
                         date: current.toLocaleDateString('pt-BR'),
-                        status: 'X' // Status padrão 'X' (Neutro/Futuro)
+                        status: 'X' 
                     });
                 }
                 current.setDate(current.getDate() + 1);
@@ -627,7 +822,6 @@
                 let present = 0;
                 
                 att.dates.forEach(d => {
-                    // X conta como P para a projeção
                     if(d.status !== 'Sem Aula') {
                         total++;
                         if(d.status === 'P' || d.status === 'X') present++;
@@ -699,25 +893,6 @@
                 appData.attendance = appData.attendance.filter(a => a.id !== id);
                 refreshAll();
             }
-        }
-
-        // --- DASHBOARD ---
-        function renderDashboard() {
-            const sumHours = (list, type) => list.filter(i => i.status === 'Concluido' && (type ? i.type === type : true)).reduce((acc, c) => acc + parseInt(c.hours), 0);
-            const sumExtras = () => appData.extras.filter(i => i.status === 'Concluido').reduce((acc, c) => acc + parseInt(c.hours), 0);
-            const obgDone = sumHours(appData.ucs, 'Obrigatória'), elecDone = sumHours(appData.ucs, 'Eletiva'), extraDone = sumExtras();
-            const obgTotal = appData.config.hoursObg, elecTotal = appData.config.hoursElec, extraTotal = appData.config.hoursExtra;
-            const grandTotal = obgTotal + elecTotal + extraTotal, grandDone = obgDone + elecDone + extraDone;
-
-            document.getElementById('dash-obg-hours').innerText = `${obgDone} / ${obgTotal}h`;
-            document.getElementById('dash-obg-perc').innerText = Math.min(100, (obgDone/obgTotal)*100).toFixed(1) + '%';
-            document.getElementById('dash-elec-hours').innerText = `${elecDone} / ${elecTotal}h`;
-            document.getElementById('dash-elec-perc').innerText = Math.min(100, (elecDone/elecTotal)*100).toFixed(1) + '%';
-            document.getElementById('dash-extra-hours').innerText = `${extraDone} / ${extraTotal}h`;
-            document.getElementById('dash-extra-perc').innerText = Math.min(100, (extraDone/extraTotal)*100).toFixed(1) + '%';
-            document.getElementById('dash-total-hours').innerText = `${grandDone} / ${grandTotal}h`;
-            document.getElementById('dash-total-perc').innerText = Math.min(100, (grandDone/grandTotal)*100).toFixed(1) + '%';
-            document.getElementById('dash-bar').style.width = Math.min(100, (grandDone/grandTotal)*100) + '%';
         }
 
         // --- UCs & EXTRAS ---
@@ -892,6 +1067,12 @@
             document.getElementById('cfg-elec').value = appData.config.hoursElec;
             document.getElementById('cfg-extra').value = appData.config.hoursExtra;
             document.getElementById('cfg-grade').value = appData.config.passingGrade;
+            document.getElementById('cfg-cal-start').value = appData.config.calStart;
+            document.getElementById('cfg-cal-end').value = appData.config.calEnd;
+            document.getElementById('cfg-cal-step').value = appData.config.calStep;
+            document.getElementById('cfg-rot-start').value = appData.config.rotStart || 6;
+            document.getElementById('cfg-rot-end').value = appData.config.rotEnd || 23;
+            document.getElementById('cfg-rot-step').value = appData.config.rotStep || 60;
         }
 
         function saveConfig() {
@@ -899,6 +1080,12 @@
             appData.config.hoursElec = parseInt(document.getElementById('cfg-elec').value);
             appData.config.hoursExtra = parseInt(document.getElementById('cfg-extra').value);
             appData.config.passingGrade = parseFloat(document.getElementById('cfg-grade').value);
+            appData.config.calStart = parseInt(document.getElementById('cfg-cal-start').value);
+            appData.config.calEnd = parseInt(document.getElementById('cfg-cal-end').value);
+            appData.config.calStep = parseInt(document.getElementById('cfg-cal-step').value);
+            appData.config.rotStart = parseInt(document.getElementById('cfg-rot-start').value);
+            appData.config.rotEnd = parseInt(document.getElementById('cfg-rot-end').value);
+            appData.config.rotStep = parseInt(document.getElementById('cfg-rot-step').value);
             alert('Configurações Salvas!');
             refreshAll();
         }
@@ -969,6 +1156,25 @@
             reader.readAsText(file);
         }
         addCalcRow();
+
+        // DASHBOARD
+        function renderDashboard() {
+            const sumHours = (list, type) => list.filter(i => i.status === 'Concluido' && (type ? i.type === type : true)).reduce((acc, c) => acc + parseInt(c.hours), 0);
+            const sumExtras = () => appData.extras.filter(i => i.status === 'Concluido').reduce((acc, c) => acc + parseInt(c.hours), 0);
+            const obgDone = sumHours(appData.ucs, 'Obrigatória'), elecDone = sumHours(appData.ucs, 'Eletiva'), extraDone = sumExtras();
+            const obgTotal = appData.config.hoursObg, elecTotal = appData.config.hoursElec, extraTotal = appData.config.hoursExtra;
+            const grandTotal = obgTotal + elecTotal + extraTotal, grandDone = obgDone + elecDone + extraDone;
+
+            document.getElementById('dash-obg-hours').innerText = `${obgDone} / ${obgTotal}h`;
+            document.getElementById('dash-obg-perc').innerText = Math.min(100, (obgDone/obgTotal)*100).toFixed(1) + '%';
+            document.getElementById('dash-elec-hours').innerText = `${elecDone} / ${elecTotal}h`;
+            document.getElementById('dash-elec-perc').innerText = Math.min(100, (elecDone/elecTotal)*100).toFixed(1) + '%';
+            document.getElementById('dash-extra-hours').innerText = `${extraDone} / ${extraTotal}h`;
+            document.getElementById('dash-extra-perc').innerText = Math.min(100, (extraDone/extraTotal)*100).toFixed(1) + '%';
+            document.getElementById('dash-total-hours').innerText = `${grandDone} / ${grandTotal}h`;
+            document.getElementById('dash-total-perc').innerText = Math.min(100, (grandDone/grandTotal)*100).toFixed(1) + '%';
+            document.getElementById('dash-bar').style.width = Math.min(100, (grandDone/grandTotal)*100) + '%';
+        }
     </script>
 </body>
 </html>
