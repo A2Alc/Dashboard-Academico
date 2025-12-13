@@ -169,52 +169,52 @@
         .btn-neutral { background: var(--neutral); color: white; }
         .btn:hover { filter: brightness(90%); }
 
-        /* CALENDAR & ROUTINE TABLES */
-        .calendar-wrapper { overflow-x: auto; }
-        .calendar-table { min-width: 800px; border-collapse: separate; border-spacing: 0; }
-        .calendar-table th { text-align: center; background: var(--primary); color: white; border-radius: 0; padding: 10px; border: 1px solid #e5e7eb;}
-        
-        .calendar-table td { 
-            padding: 0; 
-            vertical-align: top; 
-            border: 1px solid #f0f0f0;
-            height: 50px; /* Altura fixa para garantir alinhamento */
+        /* Estilo para Documentos de Texto (Semana e Rotina) */
+        .document-editor {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 40px;
+            min-height: 500px;
+            outline: none;
+            font-size: 1rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
-        
-        .cal-slot {
-            height: 100%; 
-            min-height: 50px; 
-            background: transparent;
-            font-size: 0.8rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center;
-            cursor: pointer; 
-            transition: 0.2s;
-            padding: 5px;
-            box-sizing: border-box;
-        }
-        .cal-slot:hover { background: #eff6ff; }
-        .cal-slot.filled { color: white; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 6px; margin: 2px;}
+        .document-editor h3 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; }
+        .document-editor ul { padding-left: 20px; }
 
-        /* Cores do Calendário */
-        .slot-obrig { background: #2d3436; }
-        .slot-elet { background: #10b981; }
-        .slot-extra { background: #f59e0b; }
-        .slot-routine { background: #6366f1; }
+        /* Estilos de Tabela Avançados */
+        .term-header {
+            background: #e5e7eb;
+            color: var(--text-main);
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid #d1d5db;
+            margin-top: 20px;
+        }
+        
+        .quick-select {
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 0.85rem;
+            background: white;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+        }
 
         /* ATTENDANCE BADGES */
         .att-badge { width: 35px; height: 35px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .att-p { background: #d1fae5; color: #065f46; }
         .att-p.selected { border-color: #065f46; box-shadow: 0 0 0 2px #d1fae5; transform: scale(1.1); }
-        
         .att-f { background: #fee2e2; color: #991b1b; }
         .att-f.selected { border-color: #991b1b; box-shadow: 0 0 0 2px #fee2e2; transform: scale(1.1); }
-        
-        .att-x { background: #e5e7eb; color: #374151; } /* Neutro */
+        .att-x { background: #e5e7eb; color: #374151; }
         .att-x.selected { border-color: #374151; box-shadow: 0 0 0 2px #e5e7eb; transform: scale(1.1); }
-
         .att-sa { background: #f3f4f6; color: #9ca3af; border: 1px dashed #d1d5db;}
         .att-sa.selected { border-color: #6b7280; transform: scale(1.1); }
 
@@ -289,29 +289,9 @@
         </div>
 
         <div id="routine" class="section">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h2>Minha Rotina</h2>
-                <button class="btn btn-primary" onclick="renderGrid('routine')">Atualizar Tabela</button>
-            </div>
-            <p style="color:var(--text-light); margin-bottom:20px;">Configure os horários desta tabela na aba "Configurações".</p>
-            
-            <div class="card calendar-wrapper">
-                <table class="calendar-table">
-                    <thead>
-                        <tr>
-                            <th style="width:80px;">Horário</th>
-                            <th>Domingo</th>
-                            <th>Segunda</th>
-                            <th>Terça</th>
-                            <th>Quarta</th>
-                            <th>Quinta</th>
-                            <th>Sexta</th>
-                            <th>Sábado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="routine-body"></tbody>
-                </table>
-            </div>
+            <h2>Minha Rotina (Documento)</h2>
+            <p style="color:var(--text-light);">Edite sua rotina pessoal livremente abaixo:</p>
+            <div id="routine-editor" class="document-editor" contenteditable="true" onblur="saveDocument('routine', this)"></div>
         </div>
 
         <div id="ucs" class="section">
@@ -364,25 +344,10 @@
 
         <div id="week" class="section">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h2>Semana Padrão</h2>
-                <button class="btn btn-primary" onclick="renderGrid('academic')">Atualizar Grade</button>
+                <h2>Semana Padrão (Documento)</h2>
             </div>
-            <div class="card calendar-wrapper">
-                <table class="calendar-table">
-                    <thead>
-                        <tr>
-                            <th style="width:80px;">Horário</th>
-                            <th>Segunda</th>
-                            <th>Terça</th>
-                            <th>Quarta</th>
-                            <th>Quinta</th>
-                            <th>Sexta</th>
-                            <th>Sábado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="academic-body"></tbody>
-                </table>
-            </div>
+            <p style="color:var(--text-light); margin-bottom:20px;">Monte sua grade livremente. Use as ferramentas do navegador ou copie e cole.</p>
+            <div id="week-editor" class="document-editor" contenteditable="true" onblur="saveDocument('academic', this)"></div>
         </div>
 
         <div id="attendance" class="section">
@@ -437,18 +402,6 @@
                     <label>Extracurriculares:</label><input type="number" id="cfg-extra" value="220">
                     <label>Média Aprovação:</label><input type="number" id="cfg-grade" value="6.0">
                 </div>
-                <div class="card">
-                    <h3>📅 Semana Padrão</h3>
-                    <label>Início (Hora):</label><input type="number" id="cfg-cal-start" value="13">
-                    <label>Fim (Hora):</label><input type="number" id="cfg-cal-end" value="23">
-                    <label>Intervalo (Minutos):</label><input type="number" id="cfg-cal-step" value="60">
-                </div>
-                <div class="card" style="border-left: 5px solid var(--primary);">
-                    <h3>⏰ Minha Rotina</h3>
-                    <label>Início (Hora):</label><input type="number" id="cfg-rot-start" value="6">
-                    <label>Fim (Hora):</label><input type="number" id="cfg-rot-end" value="23">
-                    <label>Intervalo (Minutos):</label><input type="number" id="cfg-rot-step" value="60">
-                </div>
             </div>
             <button class="btn btn-primary" onclick="saveConfig()">Salvar Todas Configurações</button>
         </div>
@@ -457,15 +410,34 @@
 
     <div id="ucModal" class="modal">
         <div class="modal-content">
-            <h3 id="modal-title">Adicionar</h3>
+            <h3 id="modal-title">Adicionar/Editar</h3>
             <input type="hidden" id="modal-id">
             <input type="hidden" id="modal-type-context">
+            
             <label>Nome:</label><input type="text" id="modal-name">
+            
+            <div id="term-container">
+                <label>Termo / Semestre:</label>
+                <select id="modal-term">
+                    <option value="1º Termo">1º Termo</option>
+                    <option value="2º Termo">2º Termo</option>
+                    <option value="3º Termo">3º Termo</option>
+                    <option value="4º Termo">4º Termo</option>
+                    <option value="5º Termo">5º Termo</option>
+                    <option value="6º Termo">6º Termo</option>
+                    <option value="7º Termo">7º Termo</option>
+                    <option value="8º Termo">8º Termo</option>
+                    <option value="Eletivas">Eletivas Gerais</option>
+                    <option value="Optativas">Optativas</option>
+                </select>
+            </div>
+
             <label id="lbl-cat">Categoria:</label>
             <select id="modal-category">
                 <option value="Obrigatória">Obrigatória</option>
                 <option value="Eletiva">Eletiva</option>
             </select>
+            
             <div id="extra-group-container" style="display:none;">
                 <label>Grupo:</label>
                 <select id="modal-group">
@@ -475,13 +447,16 @@
                     <option value="Grupo IV">Grupo IV</option>
                 </select>
             </div>
+            
             <label>Horas:</label><input type="number" id="modal-hours">
+            
             <label>Status:</label>
             <select id="modal-status">
                 <option value="Pendente">Pendente</option>
                 <option value="Em andamento">Em andamento</option>
                 <option value="Concluido">Concluído</option>
             </select>
+            
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn btn-danger" onclick="document.getElementById('ucModal').style.display='none'">Cancelar</button>
                 <button class="btn btn-success" onclick="saveUC()">Salvar</button>
@@ -545,15 +520,15 @@
         // --- DATA STRUCTURE ---
         let appData = {
             config: {
-                hoursObg: 1500, hoursElec: 800, hoursExtra: 220, passingGrade: 6.0,
-                calStart: 13, calEnd: 23, calStep: 60,
-                rotStart: 6, rotEnd: 23, rotStep: 60
+                hoursObg: 1500, hoursElec: 800, hoursExtra: 220, passingGrade: 6.0
             },
             ucs: [], 
             extras: [],
             attendance: [], // {id, name, dates: [{date, status}]}
-            calendarAcademic: {}, 
-            calendarRoutine: {}
+            docs: {
+                academic: "<h3>Grade Semanal</h3><p>Edite aqui...</p>",
+                routine: "<h3>Minha Rotina</h3><p>Edite aqui...</p>"
+            }
         };
 
         // --- INIT ---
@@ -562,6 +537,7 @@
             if(saved) {
                 appData = JSON.parse(saved);
                 if(!appData.attendance) appData.attendance = [];
+                if(!appData.docs) appData.docs = { academic: "", routine: "" };
                 populateConfigInputs();
             }
             refreshAll();
@@ -571,9 +547,12 @@
             renderDashboard();
             renderUCTable();
             renderExtraTable();
-            renderGrid('academic');
-            renderGrid('routine');
             renderAttendanceList();
+            
+            // Load Documents
+            if(document.getElementById('week-editor')) document.getElementById('week-editor').innerHTML = appData.docs.academic;
+            if(document.getElementById('routine-editor')) document.getElementById('routine-editor').innerHTML = appData.docs.routine;
+
             localStorage.setItem('myAcademicData', JSON.stringify(appData));
         }
 
@@ -588,8 +567,13 @@
             for(let btn of btns) {
                 if(btn.onclick.toString().includes(id)) btn.classList.add('active');
             }
-            if(id === 'week') renderGrid('academic');
-            if(id === 'routine') renderGrid('routine');
+        }
+
+        // --- DOCUMENTS (WEEK & ROUTINE) ---
+        function saveDocument(type, element) {
+            if(!appData.docs) appData.docs = {};
+            appData.docs[type] = element.innerHTML;
+            localStorage.setItem('myAcademicData', JSON.stringify(appData));
         }
 
         // --- ATTENDANCE SYSTEM ---
@@ -747,18 +731,48 @@
             
             const catSelect = document.getElementById('modal-category');
             const groupDiv = document.getElementById('extra-group-container');
+            const termDiv = document.getElementById('term-container');
 
             if(context === 'Extra') {
                 document.getElementById('modal-title').innerText = 'Nova Atividade Extracurricular';
                 catSelect.style.display = 'none';
                 document.getElementById('lbl-cat').style.display = 'none';
+                termDiv.style.display = 'none';
                 groupDiv.style.display = 'block';
             } else {
                 document.getElementById('modal-title').innerText = 'Nova Matéria';
                 catSelect.style.display = 'block';
                 document.getElementById('lbl-cat').style.display = 'block';
+                termDiv.style.display = 'block';
                 groupDiv.style.display = 'none';
             }
+        }
+
+        function editUC(id) {
+            const uc = appData.ucs.find(u => u.id === id);
+            if(!uc) return;
+            openUCModal('General');
+            document.getElementById('modal-id').value = uc.id;
+            document.getElementById('modal-name').value = uc.name;
+            document.getElementById('modal-category').value = uc.type;
+            document.getElementById('modal-hours').value = uc.hours;
+            document.getElementById('modal-status').value = uc.status;
+            document.getElementById('modal-term').value = uc.term || '1º Termo';
+            document.getElementById('modal-title').innerText = 'Editar Matéria';
+        }
+
+        function quickUpdateStatus(arrName, id, newStatus) {
+            const item = appData[arrName].find(x => x.id === id);
+            if(item) {
+                item.status = newStatus;
+                refreshAll();
+            }
+        }
+
+        function getStatusColorJS(s) {
+            if(s === 'Concluido') return '#d1fae5';
+            if(s === 'Em andamento') return '#dbeafe';
+            return '#fee2e2';
         }
 
         function saveUC() {
@@ -779,6 +793,7 @@
                 } else { appData.extras.push(newItem); }
             } else {
                 newItem.type = document.getElementById('modal-category').value;
+                newItem.term = document.getElementById('modal-term').value;
                 if(id) {
                     const idx = appData.ucs.findIndex(x => x.id == id);
                     appData.ucs[idx] = newItem;
@@ -794,12 +809,47 @@
             const filterTxt = document.getElementById('searchUC').value.toLowerCase();
             const filterStat = document.getElementById('filterStatus').value;
 
+            // Group by Term
+            const grouped = {};
             appData.ucs.forEach(uc => {
                 if(filterStat !== 'all' && uc.status !== filterStat) return;
                 if(!uc.name.toLowerCase().includes(filterTxt)) return;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${uc.name}</td><td>${uc.type}</td><td>${uc.hours}h</td><td><span style="padding:4px 8px; border-radius:10px; font-size:0.8rem; background:${getStatusColor(uc.status)}">${uc.status}</span></td><td><button onclick="deleteItem('ucs', ${uc.id})" class="btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button></td>`;
-                tbody.appendChild(tr);
+                const term = uc.term || 'Outros';
+                if(!grouped[term]) grouped[term] = [];
+                grouped[term].push(uc);
+            });
+
+            const terms = Object.keys(grouped).sort();
+
+            terms.forEach(term => {
+                const trHeader = document.createElement('tr');
+                trHeader.innerHTML = `<td colspan="5" class="term-header">${term}</td>`;
+                tbody.appendChild(trHeader);
+
+                grouped[term].forEach(uc => {
+                    const tr = document.createElement('tr');
+                    const selPendente = uc.status === 'Pendente' ? 'selected' : '';
+                    const selAndamento = uc.status === 'Em andamento' ? 'selected' : '';
+                    const selConcluido = uc.status === 'Concluido' ? 'selected' : '';
+
+                    tr.innerHTML = `
+                        <td>${uc.name}</td>
+                        <td>${uc.type}</td>
+                        <td>${uc.hours}h</td>
+                        <td>
+                            <select class="quick-select" onchange="quickUpdateStatus('ucs', ${uc.id}, this.value)" style="background:${getStatusColorJS(uc.status)}">
+                                <option value="Pendente" ${selPendente}>Pendente</option>
+                                <option value="Em andamento" ${selAndamento}>Em andamento</option>
+                                <option value="Concluido" ${selConcluido}>Concluído</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button onclick="editUC(${uc.id})" class="btn-primary" style="padding:5px 10px; margin-right:5px;"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteItem('ucs', ${uc.id})" class="btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             });
         }
 
@@ -811,7 +861,22 @@
                 if(!groups[ex.group]) groups[ex.group] = 0;
                 if(ex.status === 'Concluido') groups[ex.group] += ex.hours;
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${ex.name}</td><td>${ex.group}</td><td>${ex.hours}h</td><td><span style="padding:4px 8px; border-radius:10px; font-size:0.8rem; background:${getStatusColor(ex.status)}">${ex.status}</span></td><td><button onclick="deleteItem('extras', ${ex.id})" class="btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button></td>`;
+                const selPendente = ex.status === 'Pendente' ? 'selected' : '';
+                const selAndamento = ex.status === 'Em andamento' ? 'selected' : '';
+                const selConcluido = ex.status === 'Concluido' ? 'selected' : '';
+
+                tr.innerHTML = `
+                    <td>${ex.name}</td>
+                    <td>${ex.group}</td>
+                    <td>${ex.hours}h</td>
+                    <td>
+                        <select class="quick-select" onchange="quickUpdateStatus('extras', ${ex.id}, this.value)" style="background:${getStatusColorJS(ex.status)}">
+                            <option value="Pendente" ${selPendente}>Pendente</option>
+                            <option value="Em andamento" ${selAndamento}>Em andamento</option>
+                            <option value="Concluido" ${selConcluido}>Concluído</option>
+                        </select>
+                    </td>
+                    <td><button onclick="deleteItem('extras', ${ex.id})" class="btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button></td>`;
                 tbody.appendChild(tr);
             });
             const list = document.getElementById('extra-summary-list');
@@ -819,96 +884,7 @@
             for(let g in groups) { list.innerHTML += `<li><b>${g}:</b> ${groups[g]} horas concluídas</li>`; }
         }
 
-        function getStatusColor(s) { return s === 'Concluido' ? '#d1fae5; color:#065f46' : (s === 'Em andamento' ? '#dbeafe; color:#1e40af' : '#fee2e2; color:#991b1b'); }
         function deleteItem(arrName, id) { if(confirm('Tem certeza?')) { appData[arrName] = appData[arrName].filter(x => x.id !== id); refreshAll(); } }
-
-        // --- GRID RENDERER (FIXED) ---
-        function renderGrid(type) {
-            let config, dataStore, tbodyId;
-            if(type === 'academic') {
-                config = { start: appData.config.calStart, end: appData.config.calEnd, step: appData.config.calStep };
-                dataStore = appData.calendarAcademic || {};
-                tbodyId = 'academic-body';
-            } else {
-                config = { start: appData.config.rotStart, end: appData.config.rotEnd, step: appData.config.rotStep };
-                dataStore = appData.calendarRoutine || {};
-                tbodyId = 'routine-body';
-            }
-
-            const tbody = document.getElementById(tbodyId);
-            tbody.innerHTML = '';
-            const startMin = config.start * 60, endMin = config.end * 60, step = config.step;
-            
-            // occupiedMatrix stores: key "day-timeMin" = true
-            let occupiedMatrix = {};
-
-            for(let time = startMin; time < endMin; time += step) {
-                const hour = Math.floor(time / 60);
-                const min = time % 60;
-                const timeStr = `${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
-                
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="font-size:0.75rem; font-weight:bold; color:#666; background:#f9fafb; padding:5px; border-bottom:1px solid #eee;">${timeStr}</td>`;
-                
-                const startDay = type === 'academic' ? 1 : 0;
-                const endDay = 6;
-
-                for(let d = startDay; d <= endDay; d++) {
-                    // Check if this slot is already occupied by a previous rowspan
-                    if(occupiedMatrix[`${d}-${time}`]) continue; 
-
-                    const key = `${d}-${hour}-${min}`;
-                    const slotData = dataStore[key];
-                    let rowSpan = 1;
-                    let cellContent = '';
-                    let cellClass = '';
-
-                    if(slotData) {
-                        cellContent = slotData.name;
-                        rowSpan = slotData.blocks || 1;
-                        if(type === 'academic') {
-                             if(slotData.type === 'Obrigatória') cellClass = 'slot-obrig filled';
-                             else if(slotData.type === 'Eletiva') cellClass = 'slot-elet filled';
-                             else cellClass = 'slot-extra filled';
-                        } else { cellClass = 'slot-routine filled'; }
-
-                        // Mark future slots as occupied
-                        for(let r = 1; r < rowSpan; r++) {
-                            const futureTime = time + (r * step);
-                            occupiedMatrix[`${d}-${futureTime}`] = true;
-                        }
-                    }
-
-                    const td = document.createElement('td');
-                    if(rowSpan > 1) td.rowSpan = rowSpan;
-                    td.innerHTML = `<div class="cal-slot ${cellClass}" onclick="editGridSlot('${type}', '${key}')" style="height:${(rowSpan*100)-2}%">${cellContent}</div>`;
-                    tr.appendChild(td);
-                }
-                tbody.appendChild(tr);
-            }
-        }
-
-        function editGridSlot(type, key) {
-            let dataStore = type === 'academic' ? appData.calendarAcademic : appData.calendarRoutine;
-            if(!dataStore) dataStore = {};
-            const current = dataStore[key] || {};
-            const name = prompt("Nome da Atividade (Deixe vazio para limpar):", current.name || "");
-            if(name === null) return;
-
-            if(name.trim() === '') { delete dataStore[key]; } 
-            else {
-                const blocks = parseInt(prompt("Quantos blocos de horário isso ocupa?", current.blocks || 1)) || 1;
-                let activityType = 'Routine';
-                if(type === 'academic') {
-                    const t = prompt("Tipo (O=Obrigatória, E=Eletiva)?", "O").toUpperCase();
-                    activityType = (t === 'E') ? 'Eletiva' : 'Obrigatória';
-                }
-                dataStore[key] = { name: name, type: activityType, blocks: blocks };
-            }
-            if(type === 'academic') appData.calendarAcademic = dataStore;
-            else appData.calendarRoutine = dataStore;
-            refreshAll();
-        }
 
         // --- CONFIG & UTILS ---
         function populateConfigInputs() {
@@ -916,12 +892,6 @@
             document.getElementById('cfg-elec').value = appData.config.hoursElec;
             document.getElementById('cfg-extra').value = appData.config.hoursExtra;
             document.getElementById('cfg-grade').value = appData.config.passingGrade;
-            document.getElementById('cfg-cal-start').value = appData.config.calStart;
-            document.getElementById('cfg-cal-end').value = appData.config.calEnd;
-            document.getElementById('cfg-cal-step').value = appData.config.calStep;
-            document.getElementById('cfg-rot-start').value = appData.config.rotStart || 6;
-            document.getElementById('cfg-rot-end').value = appData.config.rotEnd || 23;
-            document.getElementById('cfg-rot-step').value = appData.config.rotStep || 60;
         }
 
         function saveConfig() {
@@ -929,12 +899,6 @@
             appData.config.hoursElec = parseInt(document.getElementById('cfg-elec').value);
             appData.config.hoursExtra = parseInt(document.getElementById('cfg-extra').value);
             appData.config.passingGrade = parseFloat(document.getElementById('cfg-grade').value);
-            appData.config.calStart = parseInt(document.getElementById('cfg-cal-start').value);
-            appData.config.calEnd = parseInt(document.getElementById('cfg-cal-end').value);
-            appData.config.calStep = parseInt(document.getElementById('cfg-cal-step').value);
-            appData.config.rotStart = parseInt(document.getElementById('cfg-rot-start').value);
-            appData.config.rotEnd = parseInt(document.getElementById('cfg-rot-end').value);
-            appData.config.rotStep = parseInt(document.getElementById('cfg-rot-step').value);
             alert('Configurações Salvas!');
             refreshAll();
         }
